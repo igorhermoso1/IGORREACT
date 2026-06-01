@@ -1,0 +1,1997 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>⚛️ IGORREACT · Aprende React con Igor</title>
+<link href="https://fonts.googleapis.com/css2?family=Space+Mono:wght@400;700&family=Exo+2:wght@300;400;600;700;900&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#050a14;--bg2:#0a1628;--bg3:#0d1f3c;--bg4:#030810;
+  --cyan:#00d4ff;--cyan2:#0099cc;--cyan3:#00f5ff;--cyan4:#005580;
+  --text:#e8f4fd;--text2:#8ab4d4;--text3:#4a7a9b;
+  --gold:#ffd700;--green:#00ff88;--red:#ff4466;--orange:#ff9500;
+  --purple:#bd93f9;
+  --border:rgba(0,212,255,0.12);--border2:rgba(0,212,255,0.32);
+  --glow:0 0 18px rgba(0,212,255,0.22);--glow2:0 0 35px rgba(0,212,255,0.4);
+  --sw:242px;
+}
+*{margin:0;padding:0;box-sizing:border-box;}
+html{scroll-behavior:smooth;}
+body{font-family:'Exo 2',sans-serif;background:var(--bg);color:var(--text);min-height:100vh;overflow-x:hidden;}
+::-webkit-scrollbar{width:5px;}::-webkit-scrollbar-track{background:var(--bg2);}::-webkit-scrollbar-thumb{background:var(--cyan4);border-radius:3px;}
+code{font-family:'Space Mono',monospace;background:rgba(0,212,255,0.1);padding:1px 6px;border-radius:4px;font-size:11px;color:var(--cyan3);}
+a{color:var(--cyan);}
+
+/* ── TOPBAR ── */
+#topbar{position:fixed;top:0;left:0;right:0;z-index:300;height:52px;background:rgba(5,10,20,0.97);border-bottom:1px solid var(--border2);display:flex;align-items:center;justify-content:space-between;padding:0 16px;backdrop-filter:blur(12px);}
+#menu-btn{background:none;border:none;cursor:pointer;color:var(--cyan);font-size:19px;display:none;margin-right:8px;}
+.logo{font-family:'Space Mono',monospace;font-size:15px;color:var(--cyan);font-weight:700;letter-spacing:1px;display:flex;align-items:baseline;gap:7px;}
+.logo small{color:var(--text3);font-size:9px;letter-spacing:2px;}
+#tstats{display:flex;gap:7px;}
+.ts{background:var(--bg3);border:1px solid var(--border);border-radius:18px;padding:3px 11px;font-size:11px;font-weight:600;color:var(--cyan);}
+
+/* ── SIDEBAR ── */
+#sidebar{width:var(--sw);min-height:calc(100vh - 52px);background:var(--bg2);border-right:1px solid var(--border2);position:fixed;top:52px;left:0;overflow-y:auto;z-index:200;transition:transform .3s ease;}
+.sbh{padding:11px 13px;border-bottom:1px solid var(--border);}
+.sbpl{display:flex;justify-content:space-between;font-size:10px;color:var(--text3);margin-bottom:4px;}
+.pbar{height:5px;background:var(--bg4);border-radius:3px;overflow:hidden;}
+.pf{height:100%;background:linear-gradient(90deg,var(--cyan2),var(--cyan3));border-radius:3px;transition:width .5s;}
+.sbl{font-size:9px;font-weight:700;letter-spacing:3px;color:var(--text3);padding:8px 13px 2px;text-transform:uppercase;}
+.si{display:flex;align-items:center;gap:7px;padding:8px 13px;cursor:pointer;font-size:11.5px;font-weight:500;color:var(--text2);transition:all .15s;border-left:3px solid transparent;user-select:none;}
+.si:hover{background:rgba(0,212,255,0.06);color:var(--cyan);}
+.si.active{background:rgba(0,212,255,0.1);color:var(--cyan);border-left-color:var(--cyan);}
+.si .ico{width:17px;text-align:center;font-size:12px;flex-shrink:0;}
+.si .done{margin-left:auto;color:var(--green);font-size:10px;font-weight:700;}
+.si .xp{margin-left:auto;font-size:9px;color:var(--text3);}
+
+/* ── MAIN ── */
+#main{margin-left:var(--sw);padding:24px 30px;min-height:calc(100vh - 52px);}
+.panel{display:none;}.panel.active{display:block;animation:fi .28s ease;}
+@keyframes fi{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:translateY(0)}}
+
+/* ── HERO ── */
+.hero{background:linear-gradient(135deg,var(--bg3),rgba(0,32,65,.9));border:1px solid var(--border2);border-radius:13px;padding:28px;margin-bottom:20px;position:relative;overflow:hidden;}
+.hero::before{content:'⚛';position:absolute;right:-15px;top:-15px;font-size:170px;opacity:.025;animation:spin 25s linear infinite;pointer-events:none;}
+@keyframes spin{to{transform:rotate(360deg)}}
+.hero h1{font-size:26px;font-weight:900;color:var(--cyan);margin-bottom:5px;}
+.hero h1 span{color:var(--text);}
+.hero p{color:var(--text2);font-size:13px;line-height:1.7;max-width:540px;}
+
+/* ── STATS GRID ── */
+.sg{display:grid;grid-template-columns:repeat(4,1fr);gap:11px;margin-bottom:20px;}
+.sc{background:var(--bg2);border:1px solid var(--border);border-radius:10px;padding:14px;text-align:center;}
+.sc .v{font-size:24px;font-weight:900;color:var(--cyan);}
+.sc .l{font-size:9px;color:var(--text3);letter-spacing:1px;text-transform:uppercase;margin-top:2px;}
+
+/* ── CARDS GRID ── */
+.cg{display:grid;grid-template-columns:repeat(auto-fill,minmax(245px,1fr));gap:13px;margin-bottom:22px;}
+.mc{background:var(--bg2);border:1px solid var(--border);border-radius:10px;padding:16px;cursor:pointer;transition:all .18s;position:relative;}
+.mc:hover{border-color:var(--border2);transform:translateY(-2px);box-shadow:var(--glow);}
+.mc.done{border-color:rgba(0,255,136,.28);}
+.mc.done::after{content:'✓';position:absolute;top:11px;right:11px;color:var(--green);font-size:13px;font-weight:800;}
+.cn{font-family:'Space Mono',monospace;font-size:9px;color:var(--text3);margin-bottom:5px;letter-spacing:2px;}
+.ci{font-size:22px;margin-bottom:6px;}
+.ct{font-size:13px;font-weight:700;color:var(--text);margin-bottom:3px;}
+.cd{font-size:11px;color:var(--text2);line-height:1.45;}
+.cp{display:flex;gap:4px;flex-wrap:wrap;margin-top:8px;}
+.pill{font-size:9px;padding:2px 7px;border-radius:8px;background:rgba(0,212,255,.08);color:var(--cyan);border:1px solid rgba(0,212,255,.16);font-weight:600;}
+.pill.g{background:rgba(0,255,136,.08);color:var(--green);border-color:rgba(0,255,136,.18);}
+.pill.gold{background:rgba(255,215,0,.08);color:var(--gold);border-color:rgba(255,215,0,.18);}
+.pill.p{background:rgba(189,147,249,.08);color:var(--purple);border-color:rgba(189,147,249,.18);}
+
+/* ── SECTION TITLE ── */
+.stitle{font-size:9px;font-weight:700;letter-spacing:3px;color:var(--text3);text-transform:uppercase;margin:0 0 13px;display:flex;align-items:center;gap:8px;}
+.stitle::after{content:'';flex:1;height:1px;background:var(--border);}
+.pt{font-size:22px;font-weight:900;color:var(--text);margin-bottom:4px;}
+.ps{font-size:12px;color:var(--text2);margin-bottom:18px;}
+
+/* ── PROGRESS ── */
+.pb{margin:12px 0;}
+.pl{display:flex;justify-content:space-between;font-size:10px;color:var(--text2);margin-bottom:4px;}
+
+/* ── LESSON ── */
+.lnav{display:flex;align-items:center;gap:9px;margin-bottom:18px;flex-wrap:wrap;}
+.bbtn{background:var(--bg3);border:1px solid var(--border2);color:var(--cyan);padding:6px 13px;border-radius:6px;cursor:pointer;font-family:'Exo 2',sans-serif;font-size:11px;font-weight:600;transition:all .15s;}
+.bbtn:hover{background:rgba(0,212,255,.13);}
+.lcrumb{font-size:10px;color:var(--text3);}
+.lb{background:var(--bg2);border:1px solid var(--border);border-radius:12px;padding:26px;}
+.lb h2{font-size:21px;font-weight:900;color:var(--cyan);margin-bottom:5px;}
+.lb h3{font-size:15px;font-weight:800;color:var(--text);margin:18px 0 7px;padding-bottom:5px;border-bottom:1px solid var(--border);}
+.lb h4{font-size:13px;font-weight:700;color:var(--cyan2);margin:13px 0 5px;}
+.lb p{font-size:12.5px;line-height:1.85;color:var(--text2);margin-bottom:9px;}
+.lb ul,.lb ol{padding-left:18px;margin-bottom:9px;}
+.lb li{font-size:12.5px;color:var(--text2);line-height:1.8;margin-bottom:2px;}
+.lb strong{color:var(--text);}
+.lb em{color:var(--cyan3);font-style:normal;font-weight:600;}
+
+/* ── CODE BLOCK ── */
+.cb{background:#020c1b;border:1px solid rgba(0,212,255,.18);border-left:3px solid var(--cyan);border-radius:7px;padding:14px 14px 14px 16px;margin:11px 0;font-family:'Space Mono',monospace;font-size:11.5px;line-height:1.8;overflow-x:auto;position:relative;white-space:pre;}
+.cpbtn{position:absolute;top:6px;right:6px;background:rgba(0,212,255,.1);border:1px solid var(--border2);color:var(--cyan);padding:2px 8px;border-radius:4px;cursor:pointer;font-size:9px;font-family:'Exo 2',sans-serif;}
+.cpbtn:hover{background:rgba(0,212,255,.22);}
+.kw{color:#ff79c6;}.fn{color:#50fa7b;}.str{color:#f1fa8c;}.cmt{color:#4a5a7a;font-style:italic;}
+.tag{color:#ff79c6;}.attr{color:#8be9fd;}.val{color:#f1fa8c;}.num{color:#bd93f9;}.imp{color:#00d4ff;}.op{color:#ff9500;}
+
+/* ── INFO BOXES ── */
+.box{border-radius:8px;padding:11px 15px;margin:10px 0;font-size:12px;line-height:1.7;border-left:3px solid;}
+.box p{font-size:12px;margin:0;}
+.tip{background:rgba(0,212,255,.05);border-color:var(--cyan);color:var(--text);}
+.warn{background:rgba(255,215,0,.05);border-color:var(--gold);color:var(--text);}
+.danger{background:rgba(255,68,102,.05);border-color:var(--red);color:var(--text);}
+.ok{background:rgba(0,255,136,.05);border-color:var(--green);color:var(--text);}
+.concept{background:rgba(189,147,249,.05);border-color:var(--purple);color:var(--text);}
+
+/* ── QUIZ ── */
+.qb{background:var(--bg3);border:1px solid var(--border2);border-radius:10px;padding:18px;margin:16px 0;}
+.qb h4{color:var(--gold);font-size:12px;margin-bottom:9px;}
+.qq{font-size:12.5px;color:var(--text);margin-bottom:10px;line-height:1.6;}
+.qopts{display:flex;flex-direction:column;gap:6px;}
+.qo{background:var(--bg2);border:1px solid var(--border);border-radius:6px;padding:9px 13px;cursor:pointer;font-size:11.5px;transition:all .15s;display:flex;align-items:center;gap:8px;user-select:none;}
+.qo:hover{border-color:var(--cyan);color:var(--cyan);}
+.qo.correct{border-color:var(--green);background:rgba(0,255,136,.07);color:var(--green);pointer-events:none;}
+.qo.wrong{border-color:var(--red);background:rgba(255,68,102,.07);color:var(--red);pointer-events:none;}
+.ql{width:19px;height:19px;border-radius:50%;background:var(--bg3);display:flex;align-items:center;justify-content:center;font-size:9px;font-weight:700;flex-shrink:0;}
+.qexp{margin-top:9px;padding:8px 12px;background:rgba(0,212,255,.05);border-radius:6px;font-size:11px;color:var(--text2);display:none;line-height:1.6;}
+.qexp.show{display:block;}
+
+/* ── FILL THE GAP ── */
+.ftg{background:linear-gradient(135deg,rgba(0,20,45,.9),rgba(0,12,30,.9));border:1px solid rgba(189,147,249,.3);border-radius:10px;padding:18px;margin:16px 0;}
+.ftg h4{color:var(--purple);font-size:12px;margin-bottom:10px;}
+.ftg-code{font-family:'Space Mono',monospace;font-size:11.5px;line-height:1.9;color:#f8f8f2;background:var(--bg4);padding:14px;border-radius:7px;border:1px solid var(--border);}
+.gap-input{font-family:'Space Mono',monospace;font-size:11px;background:rgba(189,147,249,.1);border:2px solid rgba(189,147,249,.4);border-radius:5px;color:var(--purple);padding:1px 8px;min-width:80px;outline:none;transition:border .15s;}
+.gap-input:focus{border-color:var(--purple);}
+.gap-input.ok{border-color:var(--green);color:var(--green);background:rgba(0,255,136,.07);}
+.gap-input.bad{border-color:var(--red);color:var(--red);background:rgba(255,68,102,.07);}
+.ftg-check{margin-top:10px;background:var(--purple);color:var(--bg);border:none;border-radius:6px;padding:7px 16px;font-family:'Exo 2',sans-serif;font-size:11px;font-weight:700;cursor:pointer;transition:all .15s;}
+.ftg-check:hover{opacity:.85;}
+.ftg-result{margin-top:8px;font-size:11px;display:none;}
+.ftg-result.show{display:block;}
+
+/* ── EXERCISE ── */
+.ex{background:linear-gradient(135deg,rgba(0,22,50,.8),rgba(0,13,35,.8));border:1px solid rgba(0,212,255,.26);border-radius:10px;padding:16px;margin:14px 0;}
+.exbadge{background:rgba(0,212,255,.13);color:var(--cyan);border:1px solid rgba(0,212,255,.28);padding:2px 8px;border-radius:4px;font-size:9px;font-weight:700;letter-spacing:1px;display:inline-block;margin-bottom:8px;}
+.ex h4{color:var(--cyan3);font-size:12.5px;margin-bottom:6px;}
+.ex p,.ex li{font-size:11.5px;color:var(--text2);line-height:1.75;}
+.ex ul,.ex ol{padding-left:17px;margin-top:5px;}
+.ht{margin-top:8px;font-size:10px;color:var(--text3);cursor:pointer;text-decoration:underline;display:inline-block;}
+.hb{display:none;margin-top:6px;padding:8px;background:var(--bg3);border-radius:5px;font-size:10.5px;color:var(--text2);line-height:1.6;}
+.hb.show{display:block;}
+
+/* ── MINI PROJECT ── */
+.mp{background:linear-gradient(135deg,rgba(0,28,58,.85),rgba(0,18,42,.85));border:1px solid rgba(0,212,255,.28);border-radius:10px;padding:16px;margin:14px 0;}
+.mp h4{color:var(--cyan3);font-size:13px;margin-bottom:8px;}
+.mp p,.mp li{font-size:11.5px;color:var(--text2);line-height:1.7;}
+.mp ol{padding-left:17px;margin-top:7px;}
+.ts2{display:flex;gap:4px;flex-wrap:wrap;margin-top:9px;}
+
+/* ── COMPLETE BTN ── */
+.cbtn{display:inline-flex;align-items:center;gap:7px;background:linear-gradient(135deg,var(--cyan2),var(--cyan));color:var(--bg);border:none;border-radius:8px;padding:11px 22px;font-family:'Exo 2',sans-serif;font-size:13px;font-weight:700;cursor:pointer;margin-top:22px;transition:all .2s;box-shadow:var(--glow);}
+.cbtn:hover{transform:translateY(-2px);box-shadow:var(--glow2);}
+.cbtn:disabled{opacity:.45;cursor:not-allowed;transform:none;}
+
+/* ── LIVE EDITOR ── */
+.editor-wrap{border:1px solid var(--border2);border-radius:11px;overflow:hidden;margin:14px 0;}
+.editor-topbar{background:var(--bg4);border-bottom:1px solid var(--border);display:flex;align-items:center;gap:0;padding:0;}
+.etab{padding:8px 16px;font-size:11px;font-weight:600;cursor:pointer;color:var(--text3);border-right:1px solid var(--border);border-bottom:2px solid transparent;transition:all .15s;user-select:none;}
+.etab.active{color:var(--cyan);border-bottom-color:var(--cyan);background:rgba(0,212,255,.06);}
+.etab:hover{color:var(--text);}
+.erun{margin-left:auto;background:var(--green);color:var(--bg);border:none;padding:6px 16px;font-family:'Exo 2',sans-serif;font-size:11px;font-weight:700;cursor:pointer;transition:all .15s;}
+.erun:hover{opacity:.85;}
+.editor-panes{display:grid;grid-template-columns:1fr 1fr;}
+.epane{display:none;}
+.epane.active{display:block;}
+textarea.ecode{width:100%;background:var(--bg4);color:#f8f8f2;font-family:'Space Mono',monospace;font-size:11.5px;border:none;resize:none;padding:14px;line-height:1.75;outline:none;min-height:220px;border-right:1px solid var(--border);}
+.epreview{background:#fff;min-height:220px;}
+.epreview iframe{width:100%;height:100%;min-height:220px;border:none;}
+.editor-footer{background:var(--bg4);border-top:1px solid var(--border);padding:5px 12px;font-size:10px;color:var(--text3);}
+
+/* ── REACT SIMULATOR ── */
+.rsim{border:1px solid var(--border2);border-radius:11px;overflow:hidden;margin:14px 0;}
+.rsim-bar{background:var(--bg4);border-bottom:1px solid var(--border);display:flex;align-items:center;padding:8px 14px;gap:10px;}
+.rsim-title{font-size:11px;font-weight:700;color:var(--cyan);flex:1;}
+.rsim-run{background:var(--cyan);color:var(--bg);border:none;padding:5px 14px;border-radius:5px;font-family:'Exo 2',sans-serif;font-size:10px;font-weight:700;cursor:pointer;}
+.rsim-run:hover{background:var(--cyan3);}
+.rsim-body{display:grid;grid-template-columns:1fr 1fr;}
+textarea.rsim-code{width:100%;background:#020c1b;color:#f8f8f2;font-family:'Space Mono',monospace;font-size:11px;border:none;resize:none;padding:14px;line-height:1.75;outline:none;min-height:240px;border-right:1px solid var(--border);}
+.rsim-out{background:#0f1117;min-height:240px;padding:16px;font-family:'Space Mono',monospace;font-size:11px;color:#f8f8f2;overflow:auto;}
+.rsim-out .ok{color:var(--green);}.rsim-out .err{color:var(--red);}
+
+/* ── FLASHCARDS ── */
+.fcw{perspective:1000px;}
+.fcc{width:100%;max-width:560px;margin:0 auto 13px;height:195px;cursor:pointer;position:relative;}
+.fci{width:100%;height:100%;transition:transform .5s;transform-style:preserve-3d;position:relative;}
+.fcc.flipped .fci{transform:rotateY(180deg);}
+.fcf,.fcb{position:absolute;width:100%;height:100%;backface-visibility:hidden;border-radius:10px;padding:22px;display:flex;flex-direction:column;justify-content:center;align-items:center;text-align:center;}
+.fcf{background:var(--bg3);border:1px solid var(--border2);}
+.fcb{background:linear-gradient(135deg,rgba(0,38,76,.95),rgba(0,23,55,.95));border:1px solid var(--cyan2);transform:rotateY(180deg);}
+.fclbl{font-size:8px;letter-spacing:3px;font-weight:700;margin-bottom:8px;color:var(--text3);text-transform:uppercase;}
+.fcf h3{font-size:14px;color:var(--cyan);margin-bottom:6px;line-height:1.4;}
+.fchint{font-size:10px;color:var(--text3);}
+.fcb p{font-size:11.5px;color:var(--text);line-height:1.7;}
+.fcnav{display:flex;justify-content:center;gap:9px;margin-bottom:18px;}
+.fcbtn{background:var(--bg3);border:1px solid var(--border2);color:var(--cyan);padding:7px 18px;border-radius:6px;cursor:pointer;font-size:11px;font-weight:600;font-family:'Exo 2',sans-serif;transition:all .15s;}
+.fcbtn:hover{background:rgba(0,212,255,.13);}
+.fcc-counter{text-align:center;font-size:10px;color:var(--text3);margin-bottom:9px;}
+
+/* ── ROADMAP ── */
+.rmp{border:1px solid var(--border);border-radius:9px;overflow:hidden;margin-bottom:11px;}
+.rmh{background:var(--bg3);padding:10px 15px;display:flex;align-items:center;gap:8px;cursor:pointer;user-select:none;}
+.rmh h4{font-size:12.5px;font-weight:700;flex:1;}
+.rmb{padding:11px 15px;}
+.rmi{display:flex;align-items:center;gap:8px;padding:6px 0;border-bottom:1px solid var(--border);font-size:11px;color:var(--text2);}
+.rmi:last-child{border:none;}
+.rmd{width:7px;height:7px;border-radius:50%;flex-shrink:0;}
+.rml{margin-left:auto;font-size:9px;color:var(--text3);cursor:pointer;padding:1px 6px;border:1px solid var(--border);border-radius:3px;}
+.rml:hover{color:var(--cyan);border-color:var(--cyan);}
+
+/* ── SIMULATOR PANEL ── */
+.sim-cards{display:grid;grid-template-columns:repeat(auto-fill,minmax(210px,1fr));gap:11px;margin-bottom:18px;}
+.sim-card{background:var(--bg2);border:1px solid var(--border);border-radius:9px;padding:14px;cursor:pointer;transition:all .18s;}
+.sim-card:hover{border-color:var(--border2);transform:translateY(-2px);box-shadow:var(--glow);}
+.sim-card.ae{border-color:var(--cyan);background:rgba(0,212,255,.05);}
+.sim-ico{font-size:20px;margin-bottom:5px;}
+.sim-t{font-size:12.5px;font-weight:700;color:var(--text);margin-bottom:2px;}
+.sim-d{font-size:10.5px;color:var(--text2);}
+.sim-body-wrap{background:var(--bg2);border:1px solid var(--border2);border-radius:10px;padding:18px;margin-top:5px;}
+.sim-code{background:#020c1b;border:1px solid rgba(0,212,255,.18);border-left:3px solid var(--cyan);border-radius:7px;padding:14px;font-family:'Space Mono',monospace;font-size:11px;line-height:1.8;overflow-x:auto;white-space:pre;max-height:380px;overflow-y:auto;color:#f8f8f2;}
+.sim-open{display:inline-flex;align-items:center;gap:6px;background:linear-gradient(135deg,var(--cyan2),var(--cyan));color:var(--bg);border:none;border-radius:7px;padding:9px 18px;font-family:'Exo 2',sans-serif;font-size:11px;font-weight:700;cursor:pointer;margin-top:10px;transition:all .18s;}
+.sim-open:hover{transform:translateY(-1px);}
+
+/* ── RETO DIARIO ── */
+.reto{background:linear-gradient(135deg,rgba(255,149,0,.06),rgba(255,68,0,.04));border:1px solid rgba(255,149,0,.3);border-radius:11px;padding:20px;margin:14px 0;}
+.reto-header{display:flex;align-items:center;gap:10px;margin-bottom:12px;}
+.reto-badge{background:var(--orange);color:var(--bg);padding:3px 10px;border-radius:5px;font-size:9px;font-weight:700;letter-spacing:1px;}
+.reto h4{color:var(--orange);font-size:14px;}
+.reto p{font-size:12px;color:var(--text2);line-height:1.7;}
+.reto-timer{font-family:'Space Mono',monospace;font-size:13px;color:var(--orange);margin-top:8px;}
+
+/* ── LOGROS ── */
+.ag{display:grid;grid-template-columns:repeat(auto-fill,minmax(168px,1fr));gap:10px;}
+.ac{background:var(--bg2);border:1px solid var(--border);border-radius:9px;padding:13px;text-align:center;transition:all .18s;}
+.ac.unlocked{border-color:rgba(255,215,0,.32);box-shadow:0 0 10px rgba(255,215,0,.06);}
+.ac:not(.unlocked){opacity:.32;filter:grayscale(.7);}
+.aico{font-size:27px;margin-bottom:5px;}
+.an{font-size:11px;font-weight:700;margin-bottom:2px;}
+.ad{font-size:10px;color:var(--text3);}
+
+/* ── REWARDS ── */
+.rg{display:grid;grid-template-columns:repeat(auto-fill,minmax(205px,1fr));gap:12px;}
+.rc{background:var(--bg2);border:1px solid var(--border);border-radius:9px;padding:15px;display:flex;flex-direction:column;align-items:center;text-align:center;gap:6px;}
+.rc.av{border-color:var(--gold);box-shadow:0 0 10px rgba(255,215,0,.07);}
+.rico{font-size:28px;}
+.rn{font-size:12px;font-weight:700;}
+.rd{font-size:10px;color:var(--text3);}
+.rclaim{background:var(--gold);color:var(--bg);border:none;border-radius:6px;padding:5px 13px;font-family:'Exo 2',sans-serif;font-size:10px;font-weight:700;cursor:pointer;}
+.rclaim:hover{opacity:.88;}
+
+/* ── LEVELS ── */
+.lt{width:100%;border-collapse:collapse;}
+.lt th{text-align:left;padding:7px 11px;font-size:9px;letter-spacing:2px;text-transform:uppercase;color:var(--text3);border-bottom:1px solid var(--border2);}
+.lt td{padding:9px 11px;font-size:11px;color:var(--text2);border-bottom:1px solid var(--border);}
+.lt tr.cur td{color:var(--cyan);background:rgba(0,212,255,.03);}
+.lv-badge{display:inline-block;padding:1px 7px;border-radius:7px;font-size:9px;font-weight:700;background:rgba(0,212,255,.09);color:var(--cyan);border:1px solid rgba(0,212,255,.18);}
+.xpb{background:var(--bg2);border:1px solid var(--border);border-radius:10px;padding:16px;margin-bottom:15px;}
+.xpr{display:flex;align-items:center;gap:14px;margin-bottom:9px;}
+.lvc{width:48px;height:48px;border-radius:50%;background:linear-gradient(135deg,var(--cyan2),var(--cyan3));display:flex;align-items:center;justify-content:center;font-size:19px;font-weight:900;color:var(--bg);flex-shrink:0;}
+
+/* ── MAPA CONCEPTUAL ── */
+.concept-map{display:grid;grid-template-columns:repeat(auto-fill,minmax(160px,1fr));gap:8px;margin:11px 0;}
+.ci-card{background:var(--bg3);border:1px solid var(--border);border-radius:7px;padding:12px;text-align:center;}
+.ci-ico{font-size:20px;margin-bottom:4px;}
+.ci-title{font-size:11px;font-weight:700;color:var(--cyan);margin-bottom:3px;}
+.ci-desc{font-size:10px;color:var(--text3);}
+
+/* ── COMPARISON TABLE ── */
+.ctbl{width:100%;border-collapse:collapse;margin:11px 0;font-size:11px;}
+.ctbl th{background:var(--bg3);padding:8px 11px;text-align:left;color:var(--cyan);font-weight:700;border-bottom:2px solid var(--border2);}
+.ctbl td{padding:8px 11px;border-bottom:1px solid var(--border);color:var(--text2);}
+.yes{color:var(--green);}.no{color:var(--red);}.partial{color:var(--gold);}
+
+/* ── TIMELINE ── */
+.tl{position:relative;padding-left:24px;margin:11px 0;}
+.tl::before{content:'';position:absolute;left:6px;top:0;bottom:0;width:2px;background:var(--border2);}
+.tli{position:relative;margin-bottom:14px;}
+.tli::before{content:'';position:absolute;left:-21px;top:4px;width:8px;height:8px;border-radius:50%;background:var(--cyan);box-shadow:0 0 6px var(--cyan);}
+.tli h5{font-size:12px;font-weight:700;color:var(--text);margin-bottom:2px;}
+.tli p{font-size:11px;color:var(--text2);}
+
+/* ── TOAST ── */
+#toast{position:fixed;bottom:20px;right:20px;z-index:999;background:linear-gradient(135deg,var(--bg3),var(--bg2));border:1px solid var(--border2);border-radius:9px;padding:11px 16px;display:flex;align-items:center;gap:8px;box-shadow:var(--glow);transform:translateY(65px);opacity:0;transition:all .38s cubic-bezier(.34,1.56,.64,1);max-width:280px;pointer-events:none;}
+#toast.show{transform:translateY(0);opacity:1;}
+#toast .tico{font-size:19px;}
+#toast .ttxt{font-size:11px;}
+#toast .ttxt strong{color:var(--cyan);display:block;font-size:12px;}
+#overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,.58);z-index:150;}
+#overlay.show{display:block;}
+
+/* ── RESPONSIVE ── */
+@media(max-width:900px){
+  #menu-btn{display:block;}
+  #sidebar{transform:translateX(-100%);}
+  #sidebar.open{transform:translateX(0);}
+  #main{margin-left:0;padding:12px;}
+  .sg{grid-template-columns:repeat(2,1fr);}
+  .editor-panes{grid-template-columns:1fr;}
+  .rsim-body{grid-template-columns:1fr;}
+}
+@media(max-width:560px){
+  .cg{grid-template-columns:1fr;}
+  .lb{padding:14px;}
+  #tstats .ts:nth-child(n+3){display:none;}
+}
+</style>
+</head>
+<body>
+<!-- TOPBAR -->
+<div id="topbar">
+  <div style="display:flex;align-items:center">
+    <button id="menu-btn" onclick="toggleSidebar()">☰</button>
+    <div class="logo">⚛ IGORREACT <small>DE CERO A EXPERTO</small></div>
+  </div>
+  <div id="tstats">
+    <span class="ts">🔵 <span id="st-c">0</span></span>
+    <span class="ts">⭐ Nv<span id="st-l">1</span></span>
+    <span class="ts">✅ <span id="st-d">0</span>/16</span>
+    <span class="ts">🔥 <span id="st-s">0</span></span>
+  </div>
+</div>
+<div id="overlay" onclick="toggleSidebar()"></div>
+
+<!-- SIDEBAR -->
+<div id="sidebar">
+  <div class="sbh">
+    <div class="sbpl"><span>Progreso total</span><span id="sb-pct">0%</span></div>
+    <div class="pbar"><div class="pf" id="sb-bar" style="width:0%"></div></div>
+  </div>
+  <div class="sbl">📍 Principal</div>
+  <div class="si active" id="nav-dashboard" onclick="goPanel('dashboard')"><span class="ico">🏠</span>Dashboard</div>
+  <div class="si" id="nav-roadmap" onclick="goPanel('roadmap')"><span class="ico">🗺</span>Roadmap</div>
+  <div class="si" id="nav-editor" onclick="goPanel('editor')"><span class="ico">💻</span>Editor en Vivo</div>
+  <div class="si" id="nav-simulador" onclick="goPanel('simulador')"><span class="ico">🧪</span>Laboratorio</div>
+  <div class="si" id="nav-reto" onclick="goPanel('reto')"><span class="ico">🔥</span>Reto Diario</div>
+  <div class="si" id="nav-flashcards" onclick="goPanel('flashcards')"><span class="ico">🃏</span>Flashcards</div>
+  <div class="si" id="nav-mapa" onclick="goPanel('mapa')"><span class="ico">🧠</span>Mapa Conceptual</div>
+  <div class="si" id="nav-niveles" onclick="goPanel('niveles')"><span class="ico">🎖</span>Niveles y XP</div>
+  <div class="si" id="nav-recompensas" onclick="goPanel('recompensas')"><span class="ico">🎁</span>Recompensas</div>
+  <div class="si" id="nav-logros" onclick="goPanel('logros')"><span class="ico">🏅</span>Logros</div>
+  <div class="si" id="nav-recursos" onclick="goPanel('recursos')"><span class="ico">📚</span>Recursos</div>
+
+  <div class="sbl">🧱 Fundamentos</div>
+  <div class="si" id="nav-m1" onclick="goLesson('m1')"><span class="ico">1️⃣</span>¿Qué es React?<span class="xp">30xp</span></div>
+  <div class="si" id="nav-m2" onclick="goLesson('m2')"><span class="ico">2️⃣</span>Setup y Entorno<span class="xp">35xp</span></div>
+  <div class="si" id="nav-m3" onclick="goLesson('m3')"><span class="ico">3️⃣</span>JSX y Componentes<span class="xp">40xp</span></div>
+  <div class="si" id="nav-m4" onclick="goLesson('m4')"><span class="ico">4️⃣</span>Props<span class="xp">40xp</span></div>
+  <div class="si" id="nav-m5" onclick="goLesson('m5')"><span class="ico">5️⃣</span>State + useState<span class="xp">50xp</span></div>
+  <div class="si" id="nav-m6" onclick="goLesson('m6')"><span class="ico">6️⃣</span>useEffect<span class="xp">50xp</span></div>
+
+  <div class="sbl">⚡ Intermedio</div>
+  <div class="si" id="nav-m7" onclick="goLesson('m7')"><span class="ico">7️⃣</span>Listas y Keys<span class="xp">35xp</span></div>
+  <div class="si" id="nav-m8" onclick="goLesson('m8')"><span class="ico">8️⃣</span>Eventos y Forms<span class="xp">45xp</span></div>
+  <div class="si" id="nav-m9" onclick="goLesson('m9')"><span class="ico">9️⃣</span>React Router<span class="xp">55xp</span></div>
+  <div class="si" id="nav-m10" onclick="goLesson('m10')"><span class="ico">🔟</span>Context API<span class="xp">55xp</span></div>
+  <div class="si" id="nav-m11" onclick="goLesson('m11')"><span class="ico">⚡</span>Hooks Avanzados<span class="xp">60xp</span></div>
+  <div class="si" id="nav-m12" onclick="goLesson('m12')"><span class="ico">🌐</span>Fetch y APIs<span class="xp">60xp</span></div>
+
+  <div class="sbl">🚀 Avanzado</div>
+  <div class="si" id="nav-m13" onclick="goLesson('m13')"><span class="ico">🗃</span>Redux Toolkit<span class="xp">70xp</span></div>
+  <div class="si" id="nav-m14" onclick="goLesson('m14')"><span class="ico">🎨</span>Estilos en React<span class="xp">45xp</span></div>
+  <div class="si" id="nav-m15" onclick="goLesson('m15')"><span class="ico">🧪</span>Testing Vitest<span class="xp">65xp</span></div>
+  <div class="si" id="nav-m16" onclick="goLesson('m16')"><span class="ico">🚀</span>Deploy y Prod<span class="xp">70xp</span></div>
+
+  <div class="sbl">🏆 Especial</div>
+  <div class="si" id="nav-proyecto" onclick="goPanel('proyecto')"><span class="ico">🏗</span>Proyecto Final</div>
+  <div class="si" onclick="resetProgress()" style="color:var(--red)"><span class="ico">🗑</span>Reiniciar</div>
+</div>
+
+<!-- MAIN -->
+<div id="main">
+
+<!-- DASHBOARD -->
+<div id="panel-dashboard" class="panel active">
+  <div class="hero">
+    <h1>⚛ <span>Bienvenido a</span> IGORREACT</h1>
+    <p>El curso definitivo de React <strong>de cero a experto</strong>. Teoría profunda, editor de código en vivo, laboratorio interactivo, fill-the-gap, reto diario y sistema de recompensas. Todo en una página.</p>
+    <div class="pb" style="margin-top:14px">
+      <div class="pl"><span>Progreso del curso</span><span id="dash-pct">0%</span></div>
+      <div class="pbar" style="height:9px"><div class="pf" id="dash-bar" style="width:0%"></div></div>
+    </div>
+  </div>
+  <div class="sg">
+    <div class="sc"><div class="v" id="d-c">0</div><div class="l">🔵 IgorCoins</div></div>
+    <div class="sc"><div class="v" id="d-l">1</div><div class="l">⭐ Nivel</div></div>
+    <div class="sc"><div class="v" id="d-d">0</div><div class="l">✅ Módulos</div></div>
+    <div class="sc"><div class="v" id="d-x">0</div><div class="l">⚡ XP Total</div></div>
+  </div>
+  <div class="stitle">16 Módulos — De cero a experto</div>
+  <div class="cg" id="modules-grid"></div>
+</div>
+
+<!-- ROADMAP -->
+<div id="panel-roadmap" class="panel">
+  <div class="pt">🗺 Roadmap React 2025</div>
+  <div class="ps">El camino completo de aprendizaje, de novato a desarrollador React empleable.</div>
+  <div id="roadmap-content"></div>
+</div>
+
+<!-- EDITOR EN VIVO -->
+<div id="panel-editor" class="panel">
+  <div class="pt">💻 Editor en Vivo</div>
+  <div class="ps">Escribe HTML, CSS y JavaScript y ve el resultado al instante. Como Codi.link pero integrado en la plataforma.</div>
+  <div class="editor-wrap" id="live-editor">
+    <div class="editor-topbar">
+      <div class="etab active" onclick="switchEditorTab('html',this)">HTML</div>
+      <div class="etab" onclick="switchEditorTab('css',this)">CSS</div>
+      <div class="etab" onclick="switchEditorTab('js',this)">JavaScript</div>
+      <button class="erun" onclick="runLiveEditor()">▶ Ejecutar</button>
+    </div>
+    <div class="editor-panes">
+      <div>
+        <div class="epane active" id="pane-html"><textarea class="ecode" id="ed-html" spellcheck="false" oninput="autoRunEditor()"></textarea></div>
+        <div class="epane" id="pane-css"><textarea class="ecode" id="ed-css" spellcheck="false" oninput="autoRunEditor()"></textarea></div>
+        <div class="epane" id="pane-js"><textarea class="ecode" id="ed-js" spellcheck="false" oninput="autoRunEditor()"></textarea></div>
+      </div>
+      <div class="epreview"><iframe id="preview-frame" sandbox="allow-scripts"></iframe></div>
+    </div>
+    <div class="editor-footer">
+      💡 Los cambios se aplican automáticamente · Ejemplos:
+      <span onclick="loadEditorExample('counter')" style="color:var(--cyan);cursor:pointer;margin:0 6px">Contador</span>
+      <span onclick="loadEditorExample('flexbox')" style="color:var(--cyan);cursor:pointer;margin:0 6px">Flexbox</span>
+      <span onclick="loadEditorExample('fetch')" style="color:var(--cyan);cursor:pointer;margin:0 6px">Fetch API</span>
+      <span onclick="loadEditorExample('animation')" style="color:var(--cyan);cursor:pointer;margin:0 6px">Animación</span>
+      <span onclick="loadEditorExample('form')" style="color:var(--cyan);cursor:pointer;margin:0 6px">Formulario</span>
+    </div>
+  </div>
+  <div class="lb" style="margin-top:16px">
+    <h3>🎯 Simulador React (pseudocódigo)</h3>
+    <p>Este simulador interpreta pseudocódigo React para visualizar el resultado conceptualmente. Ideal para practicar la sintaxis antes de tener el entorno instalado.</p>
+    <div class="rsim">
+      <div class="rsim-bar">
+        <span class="rsim-title">⚛ React Playground — escribe tu componente</span>
+        <button class="rsim-run" onclick="runReactSim()">▶ Simular</button>
+      </div>
+      <div class="rsim-body">
+        <textarea class="rsim-code" id="rsim-code" spellcheck="false">function Saludo({ nombre = "Mundo" }) {
+  // useState simulado
+  let [count, setCount] = useState(0);
+  
+  return (
+    <div>
+      <h1>Hola, {nombre}!</h1>
+      <p>Contador: {count}</p>
+      <button onClick={() => setCount(count + 1)}>
+        +1 click
+      </button>
+    </div>
+  );
+}</textarea>
+        <div class="rsim-out" id="rsim-out">
+          <span style="color:var(--text3)">// El resultado aparecerá aquí al pulsar ▶ Simular</span>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- LABORATORIO -->
+<div id="panel-simulador" class="panel">
+  <div class="pt">🧪 Laboratorio de Código</div>
+  <div class="ps">Ejemplos completos y funcionales. Copia el código y ejecútalo en StackBlitz o CodeSandbox con un clic.</div>
+  <div class="sim-cards" id="sim-cards"></div>
+  <div id="sim-body" style="display:none">
+    <div class="sim-body-wrap">
+      <h3 id="sim-title" style="font-size:17px;font-weight:800;color:var(--cyan);margin-bottom:5px"></h3>
+      <p id="sim-desc" style="font-size:12px;color:var(--text2);margin-bottom:8px"></p>
+      <div class="box concept" style="margin-bottom:12px"><strong>Conceptos:</strong> <span id="sim-concepts"></span></div>
+      <div style="font-size:9px;letter-spacing:2px;color:var(--text3);text-transform:uppercase;margin-bottom:5px">CÓDIGO COMPLETO</div>
+      <div class="sim-code" id="sim-code"></div>
+      <div style="display:flex;gap:9px;margin-top:11px;flex-wrap:wrap">
+        <button class="sim-open" onclick="copySimCode()">📋 Copiar código</button>
+        <a href="https://stackblitz.com/fork/react" target="_blank" class="sim-open" style="text-decoration:none">⚡ StackBlitz</a>
+        <a href="https://codesandbox.io/s/new?template=react" target="_blank" class="sim-open" style="text-decoration:none;background:linear-gradient(135deg,#444,#666)">🏖 CodeSandbox</a>
+      </div>
+      <div id="sim-steps"></div>
+    </div>
+  </div>
+</div>
+
+<!-- RETO DIARIO -->
+<div id="panel-reto" class="panel">
+  <div class="pt">🔥 Reto Diario</div>
+  <div class="ps">Un nuevo ejercicio cada día. Complétalo para ganar IgorCoins extra.</div>
+  <div id="reto-content"></div>
+</div>
+
+<!-- FLASHCARDS -->
+<div id="panel-flashcards" class="panel">
+  <div class="pt">🃏 Flashcards React</div>
+  <div class="ps">Repasa conceptos clave. Haz clic en la tarjeta para voltearla. +2 coins por tarjeta nueva.</div>
+  <div class="fcc-counter" id="fc-counter">Tarjeta 1 de 24</div>
+  <div class="fcw">
+    <div class="fcc" id="fc-card" onclick="flipCard()">
+      <div class="fci">
+        <div class="fcf"><div class="fclbl">PREGUNTA</div><h3 id="fc-q"></h3><p class="fchint">Clic para ver respuesta</p></div>
+        <div class="fcb"><div class="fclbl" style="color:var(--green)">RESPUESTA</div><p id="fc-a"></p></div>
+      </div>
+    </div>
+  </div>
+  <div class="fcnav">
+    <button class="fcbtn" onclick="prevCard()">← Anterior</button>
+    <button class="fcbtn" onclick="flipCard()">🔄 Voltear</button>
+    <button class="fcbtn" onclick="nextCard()">Siguiente →</button>
+  </div>
+  <div class="stitle">Todas las tarjetas</div>
+  <div id="fc-list" style="display:grid;grid-template-columns:repeat(auto-fill,minmax(190px,1fr));gap:7px"></div>
+</div>
+
+<!-- MAPA CONCEPTUAL -->
+<div id="panel-mapa" class="panel">
+  <div class="pt">🧠 Mapa Conceptual de React</div>
+  <div class="ps">Visualiza cómo se relacionan todos los conceptos de React. Haz clic en cada nodo para ir al módulo.</div>
+  <div id="mapa-content"></div>
+</div>
+
+<!-- NIVELES -->
+<div id="panel-niveles" class="panel">
+  <div class="pt">🎖 Niveles y XP</div>
+  <div class="ps">Sube de nivel completando módulos y ganando experiencia.</div>
+  <div class="xpb">
+    <div class="xpr">
+      <div class="lvc" id="lv-circle">1</div>
+      <div><h3 id="lv-name" style="font-size:17px;font-weight:800">React Novato</h3><p id="lv-next" style="font-size:11px;color:var(--text2)">Siguiente: 60 XP</p></div>
+    </div>
+    <div class="pbar" style="height:11px"><div class="pf" id="xp-bar" style="width:0%"></div></div>
+  </div>
+  <div class="stitle">Tabla de Niveles</div>
+  <table class="lt"><thead><tr><th>Nivel</th><th>Nombre</th><th>XP</th><th>Recompensa</th></tr></thead><tbody id="levels-tbody"></tbody></table>
+</div>
+
+<!-- RECOMPENSAS -->
+<div id="panel-recompensas" class="panel">
+  <div class="pt">🎁 Recompensas</div>
+  <div class="ps">Desbloquea recompensas al alcanzar hitos del curso.</div>
+  <div class="rg" id="rewards-grid"></div>
+</div>
+
+<!-- LOGROS -->
+<div id="panel-logros" class="panel">
+  <div class="pt">🏅 Logros</div>
+  <div class="ps">Consigue logros completando objetivos especiales.</div>
+  <div class="ag" id="ach-grid"></div>
+</div>
+
+<!-- RECURSOS -->
+<div id="panel-recursos" class="panel">
+  <div class="pt">📚 Recursos Esenciales</div>
+  <div class="ps">Todo lo que necesitas para dominar React en 2025.</div>
+  <div class="cg" id="recursos-grid"></div>
+</div>
+
+<!-- PROYECTO FINAL -->
+<div id="panel-proyecto" class="panel">
+  <div class="pt">🏗 Proyecto Final: TaskMaster Pro</div>
+  <div class="ps">Construye una app real integrando todos los conceptos del curso.</div>
+  <div class="lb">
+    <h2>📱 TaskMaster Pro — App de Tareas Full React</h2>
+    <p>El proyecto final integra <strong>todos los conceptos del curso</strong> en una aplicación real y desplegable para tu portfolio.</p>
+    <h3>🎯 Funcionalidades requeridas</h3>
+    <ul>
+      <li>Login/registro simulado con localStorage</li>
+      <li>CRUD completo de tareas con formulario controlado</li>
+      <li>Filtros por estado (pendiente/en curso/completada) y prioridad</li>
+      <li>Búsqueda en tiempo real con useMemo</li>
+      <li>Estado global con Context API o Redux Toolkit</li>
+      <li>Rutas protegidas con React Router</li>
+      <li>Diseño responsive con CSS Modules o Tailwind</li>
+      <li>Mínimo 3 tests con Vitest + React Testing Library</li>
+      <li>Deploy en Vercel o Netlify con URL pública</li>
+    </ul>
+    <h3>📅 Plan de 7 días</h3>
+    <div class="tl">
+      <div class="tli"><h5>Día 1–2: Setup + Auth</h5><p>Vite, React Router, login/registro con localStorage, rutas protegidas.</p></div>
+      <div class="tli"><h5>Día 3–4: CRUD tareas</h5><p>Formulario controlado, lista con .map(), completar y eliminar.</p></div>
+      <div class="tli"><h5>Día 5: Estado global</h5><p>Context API para compartir tareas sin prop drilling.</p></div>
+      <div class="tli"><h5>Día 6: Filtros + búsqueda</h5><p>useMemo para filtrado eficiente por estado y prioridad.</p></div>
+      <div class="tli"><h5>Día 7: Tests + Deploy</h5><p>3 tests con Vitest, build y deploy en Vercel.</p></div>
+    </div>
+    <div class="box ok">🏆 <strong>Entregable:</strong> URL pública en Vercel + repositorio GitHub con README profesional.</div>
+  </div>
+</div>
+
+<!-- LESSON -->
+<div id="panel-lesson" class="panel">
+  <div class="lnav">
+    <button class="bbtn" onclick="goPanel('dashboard')">← Volver a módulos</button>
+    <span class="lcrumb" id="lesson-crumb"></span>
+  </div>
+  <div id="lesson-content"></div>
+</div>
+
+</div><!-- /main -->
+<div id="toast"><div class="tico" id="tico">🎉</div><div class="ttxt" id="ttxt"></div></div>
+<script>
+// ═══ DATA ═══
+const LEVELS=[{n:1,name:'React Novato',xp:0},{n:2,name:'Aprendiz JSX',xp:60},{n:3,name:'Hook Padawan',xp:150},{n:4,name:'Component Crafter',xp:280},{n:5,name:'State Wizard',xp:450},{n:6,name:'Router Ninja',xp:660},{n:7,name:'Context Sage',xp:900},{n:8,name:'Redux Knight',xp:1180},{n:9,name:'Deploy Samurai',xp:1500},{n:10,name:'React Expert',xp:1860}];
+const MODULES=[
+  {id:'m1',title:'¿Qué es React?',ico:'⚛️',desc:'Historia, Virtual DOM, paradigma declarativo y ecosistema completo.',pills:['Teoría','Historia'],xp:30,coins:20},
+  {id:'m2',title:'Setup y Entorno',ico:'⚙️',desc:'Node.js, Vite, VSCode y extensiones. Primer proyecto en minutos.',pills:['Node.js','Vite'],xp:35,coins:25},
+  {id:'m3',title:'JSX y Componentes',ico:'🧩',desc:'Sintaxis JSX, reglas obligatorias, componentes funcionales y composición.',pills:['JSX','Componentes'],xp:40,coins:30},
+  {id:'m4',title:'Props',ico:'📦',desc:'Paso de datos padre→hijo, desestructuración, children y spread.',pills:['Props','Datos'],xp:40,coins:30},
+  {id:'m5',title:'State + useState',ico:'🔄',desc:'Estado local, inmutabilidad, re-render y patrones con arrays/objetos.',pills:['useState','Estado'],xp:50,coins:35},
+  {id:'m6',title:'useEffect',ico:'⚡',desc:'Efectos secundarios, ciclo de vida, dependencias y cleanup.',pills:['useEffect','Lifecycle'],xp:50,coins:35},
+  {id:'m7',title:'Listas y Keys',ico:'📋',desc:'Renderizado con .map(), prop key correcta y filtrado dinámico.',pills:['Listas','map()'],xp:35,coins:25},
+  {id:'m8',title:'Eventos y Formularios',ico:'📝',desc:'Formularios controlados, handler genérico y validación.',pills:['Eventos','Forms'],xp:45,coins:30},
+  {id:'m9',title:'React Router',ico:'🗺️',desc:'Navegación SPA, rutas dinámicas, protegidas y hooks de router.',pills:['Router','SPA'],xp:55,coins:40},
+  {id:'m10',title:'Context API',ico:'🌍',desc:'Estado global sin Redux, createContext y custom hook.',pills:['Context','Global'],xp:55,coins:40},
+  {id:'m11',title:'Hooks Avanzados',ico:'🎣',desc:'useReducer, useMemo, useCallback, useRef y custom hooks.',pills:['Hooks','Performance'],xp:60,coins:45},
+  {id:'m12',title:'Fetch y APIs REST',ico:'🌐',desc:'fetch, axios, async/await y los tres estados de una petición.',pills:['API','async'],xp:60,coins:45},
+  {id:'m13',title:'Redux Toolkit',ico:'🗃️',desc:'Redux moderno: slices, store, dispatch y Immer.',pills:['Redux','RTK'],xp:70,coins:55},
+  {id:'m14',title:'Estilos en React',ico:'🎨',desc:'CSS Modules, Tailwind CSS, estilos inline y estrategias.',pills:['CSS','Tailwind'],xp:45,coins:35},
+  {id:'m15',title:'Testing con Vitest',ico:'🧪',desc:'Unit tests, React Testing Library, mocks y cobertura.',pills:['Testing','Vitest'],xp:65,coins:50},
+  {id:'m16',title:'Deploy y Producción',ico:'🚀',desc:'Build optimizado, Vercel, Netlify, env vars y rendimiento.',pills:['Deploy','Prod'],xp:70,coins:60}
+];
+const REWARDS=[
+  {id:'r1',ico:'🎯',name:'Primer módulo',desc:'Completa tu primer módulo',req:1,type:'modules'},
+  {id:'r2',ico:'⚡',name:'Arranque',desc:'Completa 3 módulos',req:3,type:'modules'},
+  {id:'r3',ico:'🔥',name:'En racha',desc:'Completa 5 módulos',req:5,type:'modules'},
+  {id:'r4',ico:'💎',name:'Mitad del camino',desc:'Completa 8 módulos',req:8,type:'modules'},
+  {id:'r5',ico:'🏆',name:'React Master',desc:'Completa los 16 módulos',req:16,type:'modules'},
+  {id:'r6',ico:'🌟',name:'Centurión',desc:'Gana 100 IgorCoins',req:100,type:'coins'},
+  {id:'r7',ico:'👑',name:'Rey del React',desc:'Gana 500 IgorCoins',req:500,type:'coins'},
+  {id:'r8',ico:'🚀',name:'Deploy Legend',desc:'Llega al nivel 10',req:10,type:'level'}
+];
+const ACHIEVEMENTS=[
+  {id:'a1',ico:'🏁',name:'Bienvenido',desc:'Accede a la plataforma',cond:'always'},
+  {id:'a2',ico:'📖',name:'Primer estudio',desc:'Completa el módulo 1',cond:'m1'},
+  {id:'a3',ico:'⚙️',name:'Dev Ready',desc:'Configura el entorno',cond:'m2'},
+  {id:'a4',ico:'🧩',name:'Componentero',desc:'Domina JSX',cond:'m3'},
+  {id:'a5',ico:'📦',name:'Prop Master',desc:'Completa Props',cond:'m4'},
+  {id:'a6',ico:'🎣',name:'Hook Fisher',desc:'Completa useState',cond:'m5'},
+  {id:'a7',ico:'⚡',name:'Effect Lord',desc:'Domina useEffect',cond:'m6'},
+  {id:'a8',ico:'🗺',name:'Navigator',desc:'Completa React Router',cond:'m9'},
+  {id:'a9',ico:'🌐',name:'API Caller',desc:'Completa Fetch y APIs',cond:'m12'},
+  {id:'a10',ico:'🗃',name:'Redux Knight',desc:'Completa Redux Toolkit',cond:'m13'},
+  {id:'a11',ico:'🧪',name:'Tester Pro',desc:'Completa Testing',cond:'m15'},
+  {id:'a12',ico:'🚀',name:'Deployed!',desc:'Completa Deploy',cond:'m16'},
+  {id:'a13',ico:'💯',name:'React Expert',desc:'Completa los 16 módulos',cond:'all'},
+  {id:'a14',ico:'🏅',name:'Igor Padawan',desc:'Supera 300 IgorCoins',cond:'coins300'}
+];
+const FLASHCARDS=[
+  {q:'¿Qué es React?',a:'Librería JS de Meta para construir interfaces de usuario basada en componentes reutilizables y Virtual DOM eficiente.'},
+  {q:'¿Qué es el Virtual DOM?',a:'Copia ligera del DOM en memoria. React hace diffing entre el VDOM nuevo y el anterior, y solo actualiza los nodos que cambiaron.'},
+  {q:'¿Qué es JSX?',a:'JavaScript XML. Parece HTML pero es JS puro. Babel lo transforma a React.createElement() en el proceso de build.'},
+  {q:'¿Qué es un Componente funcional?',a:'Función JS que acepta props y devuelve JSX. Es la forma estándar de crear componentes en React moderno.'},
+  {q:'¿Por qué es importante la prop key?',a:'Identifica de forma única cada elemento en listas. Permite al algoritmo de reconciliación saber qué cambió, añadió o eliminó.'},
+  {q:'¿Qué devuelve useState?',a:'Array de dos: [valorActual, funcionSetter]. El setter actualiza el valor y provoca un re-render del componente.'},
+  {q:'¿Qué es useEffect?',a:'Hook para efectos secundarios (fetch, timers, suscripciones) después del render. Acepta función + array de dependencias.'},
+  {q:'useEffect con [] vacío',a:'Solo se ejecuta al montar el componente una vez. Equivale al antiguo componentDidMount en clases.'},
+  {q:'¿Para qué sirve el cleanup de useEffect?',a:'Función retornada que se ejecuta al desmontar. Cancela timers o suscripciones para evitar memory leaks.'},
+  {q:'¿Qué es prop drilling?',a:'Pasar props por capas de componentes intermedios que no las necesitan, solo para llegar a un hijo lejano.'},
+  {q:'¿Qué resuelve Context API?',a:'El prop drilling. Permite compartir estado global entre componentes sin pasarlo en cada nivel del árbol.'},
+  {q:'useMemo vs useCallback',a:'useMemo memoriza el RESULTADO de una función. useCallback memoriza la FUNCIÓN para no recrearla en cada render.'},
+  {q:'¿Para qué sirve useReducer?',a:'Estado complejo con múltiples valores. Patrón: dispatch(acción) → reducer(state, action) → nuevo estado.'},
+  {q:'¿Qué es un Custom Hook?',a:'Función que empieza por "use" y llama a otros Hooks. Extrae y reutiliza lógica de estado entre componentes.'},
+  {q:'¿Qué es React Router?',a:'Librería para navegación SPA. Mapea URLs a componentes sin recargar el navegador usando la History API.'},
+  {q:'Link vs etiqueta a',a:'La etiqueta a recarga la página completa. Link navega sin recarga, manteniendo el estado de la app React.'},
+  {q:'¿Qué es Redux Toolkit?',a:'La forma moderna de usar Redux. Reduce boilerplate con createSlice y configureStore. Usa Immer internamente.'},
+  {q:'¿Para qué sirve useRef?',a:'Acceder al DOM directamente (focus, scroll) y guardar valores que persisten entre renders sin causar re-renders.'},
+  {q:'¿Qué son CSS Modules?',a:'Archivos .module.css que generan clases únicas con hash. Evitan colisiones de nombres entre componentes.'},
+  {q:'npm run build en Vite',a:'Genera /dist con JS y CSS minificado, tree-shaking aplicado, optimizado para producción.'},
+  {q:'¿Qué es el reconciliation?',a:'React compara el VDOM nuevo con el anterior (diffing) y calcula los cambios mínimos para el DOM real.'},
+  {q:'¿Para qué sirve React.memo?',a:'Evita re-renders innecesarios del hijo. Solo re-renderiza si sus props cambian.'},
+  {q:'¿Qué es StrictMode?',a:'Activa comprobaciones extra en desarrollo: ejecuta efectos dos veces para detectar side effects. No afecta producción.'},
+  {q:'¿Qué es Vite?',a:'Build tool ultrarrápida basada en ES Modules nativos. Arranque en milisegundos. Estándar para React en 2025.'}
+];
+const ROADMAP_DATA=[
+  {title:'🧱 Fase 1 — Fundamentos',color:'#00d4ff',mods:['m1','m2','m3','m4','m5','m6'],items:['Entender qué es React y por qué usarlo','Configurar entorno: Node.js, Vite, VSCode','Dominar JSX y componentes funcionales','Pasar datos con Props','Gestionar estado con useState','Efectos secundarios con useEffect']},
+  {title:'⚡ Fase 2 — Intermedio',color:'#ff9500',mods:['m7','m8','m9','m10','m11','m12'],items:['Renderizar listas con .map() y Keys','Formularios controlados y validación','Navegación SPA con React Router','Estado global con Context API','Hooks: useReducer, useMemo, useCallback','Consumir APIs REST con fetch y axios']},
+  {title:'🚀 Fase 3 — Avanzado',color:'#ffd700',mods:['m13','m14','m15','m16'],items:['Redux Toolkit para proyectos grandes','Estilos: CSS Modules y Tailwind CSS','Testing con Vitest y React Testing Library','Deploy en Vercel/Netlify + optimización']},
+  {title:'🏆 Fase 4 — Proyecto y Empleabilidad',color:'#00ff88',mods:[],items:['Construir Proyecto Final: TaskMaster Pro','GitHub con README profesional','Deploy con URL pública en Vercel','Explorar Next.js como siguiente paso']}
+];
+const RECURSOS_DATA=[
+  {ico:'📖',title:'React.dev',desc:'Documentación oficial. Tutoriales interactivos y referencia de API completa.',url:'https://react.dev',tag:'Oficial'},
+  {ico:'⚡',title:'Vite',desc:'Build tool ultrarrápida. El estándar moderno para proyectos React 2025.',url:'https://vite.dev',tag:'Build Tool'},
+  {ico:'🟢',title:'Node.js LTS',desc:'Requisito previo. Descarga siempre la versión LTS.',url:'https://nodejs.org',tag:'Requisito'},
+  {ico:'🔵',title:'VS Code',desc:'Editor recomendado. Instala ES7+ Snippets, Prettier y ESLint.',url:'https://code.visualstudio.com',tag:'Editor'},
+  {ico:'🗺',title:'React Router',desc:'Librería de navegación SPA. Rutas dinámicas y protegidas.',url:'https://reactrouter.com',tag:'Routing'},
+  {ico:'🔄',title:'TanStack Query',desc:'Fetching profesional: caché, re-fetching y paginación automáticos.',url:'https://tanstack.com/query',tag:'Data'},
+  {ico:'🗃',title:'Redux Toolkit',desc:'Estado global moderno. Slices, RTK Query y createAsyncThunk.',url:'https://redux-toolkit.js.org',tag:'State'},
+  {ico:'🏖',title:'CodeSandbox',desc:'IDE online para practicar React sin instalación.',url:'https://codesandbox.io',tag:'Online IDE'},
+  {ico:'⚡',title:'StackBlitz',desc:'Ejecuta Vite + React en el navegador en segundos.',url:'https://stackblitz.com',tag:'Online IDE'},
+  {ico:'😎',title:'Awesome React',desc:'Lista curada de librerías, herramientas y recursos.',url:'https://github.com/enaqx/awesome-react',tag:'GitHub'},
+  {ico:'🎨',title:'Tailwind CSS',desc:'Framework utility-first más popular para React en 2025.',url:'https://tailwindcss.com',tag:'CSS'},
+  {ico:'📘',title:'TypeScript',desc:'JavaScript tipado. El siguiente paso natural tras React.',url:'https://www.typescriptlang.org',tag:'Avanzado'}
+];
+const EXPERIMENTS=[
+  {id:'counter',ico:'🔢',title:'Contador interactivo',desc:'useState con histórico de valores.',concepts:'useState, eventos, renderizado condicional',
+   steps:['useState(0) inicia el contador','setCount() actualiza + provoca re-render','El historial usa spread [...prev, nuevo]','Color cambia con operador ternario'],
+   code:`import { useState } from 'react';
+
+function Contador() {
+  const [count, setCount] = useState(0);
+  const [historial, setHistorial] = useState([]);
+
+  const cambiar = (nuevo) => {
+    setCount(nuevo);
+    setHistorial(prev => [...prev, nuevo]);
+  };
+
+  return (
+    <div style={{textAlign:'center',padding:'30px',fontFamily:'sans-serif'}}>
+      <h1 style={{fontSize:'5rem',
+        color: count>0 ? '#00cc66' : count<0 ? '#ff4466' : '#888',
+        transition:'color 0.3s'}}>
+        {count}
+      </h1>
+      <div style={{display:'flex',gap:'12px',justifyContent:'center',marginBottom:'16px'}}>
+        <button onClick={() => cambiar(count-1)}
+          style={{padding:'10px 24px',background:'#ff4466',color:'white',border:'none',borderRadius:'8px',fontSize:'18px',cursor:'pointer'}}>−</button>
+        <button onClick={() => cambiar(0)}
+          style={{padding:'10px 24px',background:'#555',color:'white',border:'none',borderRadius:'8px',fontSize:'14px',cursor:'pointer'}}>Reset</button>
+        <button onClick={() => cambiar(count+1)}
+          style={{padding:'10px 24px',background:'#00cc66',color:'white',border:'none',borderRadius:'8px',fontSize:'18px',cursor:'pointer'}}>+</button>
+      </div>
+      {historial.length>0 && <p style={{color:'#888',fontSize:'12px'}}>Historial: {historial.slice(-8).join(' → ')}</p>}
+    </div>
+  );
+}
+export default Contador;`},
+  {id:'todo',ico:'✅',title:'TodoList completa',desc:'Añadir, completar y eliminar tareas con arrays en estado.',concepts:'useState array, .map(), .filter(), formularios controlados',
+   steps:['El array vive en useState','Añadir: spread [...tareas, nueva]','Completar: .map() modifica solo el item correcto','Eliminar: .filter() crea array sin ese id'],
+   code:`import { useState } from 'react';
+
+function TodoList() {
+  const [tareas, setTareas] = useState([
+    {id:1, texto:'Aprender useState', hecha:true},
+    {id:2, texto:'Dominar useEffect', hecha:false},
+    {id:3, texto:'Completar el proyecto', hecha:false},
+  ]);
+  const [input, setInput] = useState('');
+
+  const agregar = (e) => {
+    e.preventDefault();
+    if (!input.trim()) return;
+    setTareas([...tareas, {id:Date.now(), texto:input.trim(), hecha:false}]);
+    setInput('');
+  };
+  const toggle = (id) => setTareas(tareas.map(t => t.id===id ? {...t,hecha:!t.hecha} : t));
+  const eliminar = (id) => setTareas(tareas.filter(t => t.id!==id));
+
+  return (
+    <div style={{maxWidth:'420px',margin:'24px auto',fontFamily:'sans-serif'}}>
+      <h2>📋 Tareas ({tareas.filter(t=>!t.hecha).length} pendientes)</h2>
+      <form onSubmit={agregar} style={{display:'flex',gap:'8px',margin:'16px 0'}}>
+        <input value={input} onChange={e=>setInput(e.target.value)}
+          placeholder="Nueva tarea..."
+          style={{flex:1,padding:'10px',border:'1px solid #ddd',borderRadius:'8px'}}/>
+        <button type="submit" style={{padding:'10px 18px',background:'#0099cc',color:'white',border:'none',borderRadius:'8px',cursor:'pointer',fontWeight:'bold'}}>+</button>
+      </form>
+      <ul style={{listStyle:'none',padding:0}}>
+        {tareas.map(t => (
+          <li key={t.id} style={{display:'flex',alignItems:'center',gap:'10px',
+            padding:'12px',marginBottom:'6px',
+            background:t.hecha?'#f0fff4':'#f9f9f9',
+            border:'1px solid '+(t.hecha?'#86efac':'#e5e5e5'),
+            borderRadius:'8px',transition:'all 0.2s'}}>
+            <input type="checkbox" checked={t.hecha} onChange={()=>toggle(t.id)} style={{width:'18px',height:'18px',cursor:'pointer'}}/>
+            <span style={{flex:1,textDecoration:t.hecha?'line-through':'none',color:t.hecha?'#999':'#333'}}>{t.texto}</span>
+            <button onClick={()=>eliminar(t.id)} style={{background:'none',border:'none',color:'#ff4466',cursor:'pointer',fontSize:'18px'}}>✕</button>
+          </li>
+        ))}
+      </ul>
+    </div>
+  );
+}
+export default TodoList;`},
+  {id:'fetch',ico:'🌐',title:'Fetch de API pública',desc:'Patrón completo: loading → datos/error con AbortController.',concepts:'useEffect, fetch, async/await, AbortController, loading/error',
+   steps:['[] vacío = ejecutar solo al montar','AbortController cancela si desmontamos','try/catch/finally maneja todos los casos','Renderizado condicional según el estado'],
+   code:`import { useState, useEffect } from 'react';
+
+function Usuarios() {
+  const [usuarios, setUsuarios] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
+
+  useEffect(() => {
+    const controller = new AbortController();
+    (async () => {
+      try {
+        const res = await fetch(
+          'https://jsonplaceholder.typicode.com/users',
+          {signal: controller.signal}
+        );
+        if (!res.ok) throw new Error(\`HTTP \${res.status}\`);
+        setUsuarios(await res.json());
+      } catch(e) {
+        if (e.name !== 'AbortError') setError(e.message);
+      } finally {
+        setLoading(false);
+      }
+    })();
+    return () => controller.abort();
+  }, []);
+
+  if (loading) return <p style={{padding:'30px',textAlign:'center'}}>⏳ Cargando...</p>;
+  if (error) return <p style={{padding:'30px',color:'red'}}>❌ {error}</p>;
+
+  return (
+    <div style={{maxWidth:'500px',margin:'20px auto',fontFamily:'sans-serif'}}>
+      <h2 style={{marginBottom:'16px'}}>👥 {usuarios.length} Usuarios</h2>
+      {usuarios.map(u => (
+        <div key={u.id} style={{border:'1px solid #e5e5e5',borderRadius:'10px',padding:'14px',marginBottom:'8px'}}>
+          <div style={{display:'flex',justifyContent:'space-between'}}>
+            <strong>{u.name}</strong>
+            <span style={{fontSize:'11px',background:'#f0f9ff',color:'#0099cc',padding:'2px 8px',borderRadius:'10px'}}>@{u.username}</span>
+          </div>
+          <p style={{margin:'5px 0 0',color:'#666',fontSize:'13px'}}>📧 {u.email} · 🌐 {u.website}</p>
+        </div>
+      ))}
+    </div>
+  );
+}
+export default Usuarios;`},
+  {id:'form',ico:'📝',title:'Formulario con validación',desc:'Handler genérico, validación en tiempo real y feedback visual.',concepts:'useState, handler genérico [name], validación, onBlur',
+   steps:['Un objeto en estado guarda todos los campos','[name]: value permite handler genérico para todos','onBlur activa validación al salir del campo','Botón deshabilitado mientras haya errores'],
+   code:`import { useState } from 'react';
+
+function FormRegistro() {
+  const [form, setForm] = useState({nombre:'',email:'',password:'',rol:'alumno',terminos:false});
+  const [errores, setErrores] = useState({});
+  const [tocados, setTocados] = useState({});
+  const [enviado, setEnviado] = useState(false);
+
+  const handleChange = (e) => {
+    const {name, value, type, checked} = e.target;
+    setForm(prev => ({...prev, [name]: type==='checkbox' ? checked : value}));
+  };
+
+  const validar = (campo, valor) => {
+    const v = valor ?? form[campo];
+    if (campo==='nombre' && !v.trim()) return 'Obligatorio';
+    if (campo==='email' && !/^[^\\s@]+@[^\\s@]+\\.[^\\s@]+$/.test(v)) return 'Email inválido';
+    if (campo==='password' && v.length<6) return 'Mínimo 6 caracteres';
+    if (campo==='terminos' && !v) return 'Debes aceptar';
+    return null;
+  };
+
+  const handleBlur = ({target:{name}}) => {
+    setTocados(p => ({...p,[name]:true}));
+    const err = validar(name);
+    setErrores(p => ({...p,[name]:err}));
+  };
+
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    const campos = ['nombre','email','password','terminos'];
+    const ev = {}, tt = {};
+    campos.forEach(c => { tt[c]=true; const err=validar(c); if(err) ev[c]=err; });
+    setTocados(tt); setErrores(ev);
+    if (!Object.keys(ev).length) setEnviado(true);
+  };
+
+  if (enviado) return (
+    <div style={{textAlign:'center',padding:'40px',fontFamily:'sans-serif'}}>
+      <div style={{fontSize:'60px'}}>🎉</div>
+      <h2 style={{color:'#00cc66'}}>¡Registrado!</h2>
+      <p>Bienvenido, {form.nombre}. Rol: {form.rol}</p>
+    </div>
+  );
+
+  const fld = (campo) => ({display:'block',width:'100%',padding:'10px',marginBottom:'4px',
+    border:\`2px solid \${tocados[campo]?(errores[campo]?'#ff4466':'#00cc66'):'#ddd'}\`,
+    borderRadius:'8px',fontSize:'14px',outline:'none',boxSizing:'border-box'});
+
+  return (
+    <form onSubmit={handleSubmit} style={{maxWidth:'400px',margin:'20px auto',fontFamily:'sans-serif',padding:'24px',border:'1px solid #e5e5e5',borderRadius:'12px'}}>
+      <h2 style={{marginBottom:'20px',textAlign:'center'}}>📋 Registro</h2>
+      <label style={{fontSize:'13px',fontWeight:'600'}}>Nombre *</label>
+      <input name="nombre" value={form.nombre} onChange={handleChange} onBlur={handleBlur} style={fld('nombre')} placeholder="Tu nombre"/>
+      {tocados.nombre && errores.nombre && <p style={{color:'#ff4466',fontSize:'12px',margin:'0 0 8px'}}>{errores.nombre}</p>}
+      <label style={{fontSize:'13px',fontWeight:'600'}}>Email *</label>
+      <input name="email" type="email" value={form.email} onChange={handleChange} onBlur={handleBlur} style={fld('email')} placeholder="tu@email.com"/>
+      {tocados.email && errores.email && <p style={{color:'#ff4466',fontSize:'12px',margin:'0 0 8px'}}>{errores.email}</p>}
+      <label style={{fontSize:'13px',fontWeight:'600'}}>Contraseña *</label>
+      <input name="password" type="password" value={form.password} onChange={handleChange} onBlur={handleBlur} style={fld('password')} placeholder="Mínimo 6 caracteres"/>
+      {tocados.password && errores.password && <p style={{color:'#ff4466',fontSize:'12px',margin:'0 0 8px'}}>{errores.password}</p>}
+      <select name="rol" value={form.rol} onChange={handleChange} style={{...fld('rol'),marginBottom:'14px'}}>
+        <option value="alumno">Alumno</option>
+        <option value="docente">Docente</option>
+      </select>
+      <label style={{display:'flex',alignItems:'center',gap:'10px',marginBottom:'6px',cursor:'pointer'}}>
+        <input name="terminos" type="checkbox" checked={form.terminos} onChange={handleChange} onBlur={handleBlur}/>
+        <span style={{fontSize:'13px'}}>Acepto los términos *</span>
+      </label>
+      {tocados.terminos && errores.terminos && <p style={{color:'#ff4466',fontSize:'12px',margin:'0 0 12px'}}>{errores.terminos}</p>}
+      <button type="submit" style={{width:'100%',padding:'12px',background:'#0099cc',color:'white',border:'none',borderRadius:'8px',fontSize:'15px',fontWeight:'bold',cursor:'pointer'}}>Registrarse →</button>
+    </form>
+  );
+}
+export default FormRegistro;`},
+  {id:'filter',ico:'🔍',title:'Búsqueda y filtros',desc:'Lista con búsqueda, filtros combinados y ordenación.',concepts:'useState, .filter(), .sort(), búsqueda en tiempo real',
+   steps:['Los datos originales nunca se modifican','Filtros se encadenan en cada render','toLowerCase() para búsqueda insensible','sort() al final con el criterio elegido'],
+   code:`import { useState } from 'react';
+
+const PRODUCTOS = [
+  {id:1,nombre:'MacBook Pro M4',cat:'Portátil',precio:2499,stock:true,rating:4.9},
+  {id:2,nombre:'iPhone 16 Pro',cat:'Móvil',precio:1199,stock:true,rating:4.8},
+  {id:3,nombre:'AirPods Pro',cat:'Audio',precio:279,stock:false,rating:4.7},
+  {id:4,nombre:'iPad Pro',cat:'Tablet',precio:1299,stock:true,rating:4.6},
+  {id:5,nombre:'Galaxy S25',cat:'Móvil',precio:999,stock:true,rating:4.5},
+  {id:6,nombre:'Sony WH-1000XM6',cat:'Audio',precio:399,stock:true,rating:4.8},
+  {id:7,nombre:'Dell XPS 15',cat:'Portátil',precio:1799,stock:false,rating:4.4},
+];
+
+export default function Catalogo() {
+  const [busqueda, setBusqueda] = useState('');
+  const [cat, setCat] = useState('Todas');
+  const [soloStock, setSoloStock] = useState(false);
+  const [orden, setOrden] = useState('nombre');
+
+  const cats = ['Todas',...new Set(PRODUCTOS.map(p=>p.cat))];
+  const resultado = PRODUCTOS
+    .filter(p=>p.nombre.toLowerCase().includes(busqueda.toLowerCase()))
+    .filter(p=>cat==='Todas'||p.cat===cat)
+    .filter(p=>soloStock?p.stock:true)
+    .sort((a,b)=>orden==='precio-asc'?a.precio-b.precio:orden==='precio-desc'?b.precio-a.precio:orden==='rating'?b.rating-a.rating:a.nombre.localeCompare(b.nombre));
+
+  return (
+    <div style={{maxWidth:'560px',margin:'20px auto',fontFamily:'sans-serif'}}>
+      <h2 style={{marginBottom:'14px'}}>🛒 Catálogo</h2>
+      <input value={busqueda} onChange={e=>setBusqueda(e.target.value)} placeholder="🔍 Buscar..."
+        style={{width:'100%',padding:'10px',border:'2px solid #e5e5e5',borderRadius:'10px',marginBottom:'10px',boxSizing:'border-box'}}/>
+      <div style={{display:'flex',gap:'6px',flexWrap:'wrap',marginBottom:'10px'}}>
+        {cats.map(c=><button key={c} onClick={()=>setCat(c)} style={{padding:'5px 13px',borderRadius:'20px',border:'none',cursor:'pointer',background:cat===c?'#0099cc':'#f0f0f0',color:cat===c?'white':'#444',fontSize:'12px'}}>{c}</button>)}
+      </div>
+      <div style={{display:'flex',gap:'14px',alignItems:'center',marginBottom:'12px',flexWrap:'wrap'}}>
+        <label style={{display:'flex',alignItems:'center',gap:'6px',fontSize:'13px',cursor:'pointer'}}>
+          <input type="checkbox" checked={soloStock} onChange={e=>setSoloStock(e.target.checked)}/>Solo disponibles
+        </label>
+        <select value={orden} onChange={e=>setOrden(e.target.value)} style={{padding:'5px',border:'1px solid #e5e5e5',borderRadius:'7px',fontSize:'12px'}}>
+          <option value="nombre">A→Z</option>
+          <option value="precio-asc">Precio ↑</option>
+          <option value="precio-desc">Precio ↓</option>
+          <option value="rating">Rating</option>
+        </select>
+        <span style={{fontSize:'12px',color:'#999'}}>{resultado.length} resultados</span>
+      </div>
+      {resultado.map(p=>(
+        <div key={p.id} style={{border:'1px solid #e5e5e5',borderRadius:'10px',padding:'13px',marginBottom:'7px',opacity:p.stock?1:.55}}>
+          <div style={{display:'flex',justifyContent:'space-between'}}>
+            <strong>{p.nombre}</strong><strong style={{color:'#0099cc'}}>{p.precio.toLocaleString()}€</strong>
+          </div>
+          <div style={{display:'flex',justifyContent:'space-between',marginTop:'5px',fontSize:'12px',color:'#888'}}>
+            <span>⭐ {p.rating} · {p.cat}</span>
+            <span style={{color:p.stock?'#00cc66':'#ff4466',fontWeight:'600'}}>{p.stock?'✅ Disponible':'❌ Agotado'}</span>
+          </div>
+        </div>
+      ))}
+    </div>
+  );
+}`},
+  {id:'context',ico:'🌗',title:'Modo oscuro con Context',desc:'Context API para tema global sin prop drilling.',concepts:'createContext, useContext, Provider, custom hook, localStorage',
+   steps:['createContext crea el canal de comunicación','Provider envuelve la app con el estado','useTheme es el custom hook para consumir','localStorage persiste la preferencia'],
+   code:`import { createContext, useContext, useState, useEffect } from 'react';
+
+const ThemeContext = createContext(null);
+
+function ThemeProvider({ children }) {
+  const [oscuro, setOscuro] = useState(
+    () => localStorage.getItem('tema') === 'oscuro'
+  );
+  useEffect(() => { localStorage.setItem('tema', oscuro?'oscuro':'claro'); }, [oscuro]);
+  return (
+    <ThemeContext.Provider value={{oscuro, toggle:()=>setOscuro(p=>!p)}}>
+      {children}
+    </ThemeContext.Provider>
+  );
+}
+const useTheme = () => useContext(ThemeContext);
+
+function Navbar() {
+  const {oscuro, toggle} = useTheme();
+  return (
+    <nav style={{background:oscuro?'#0a1628':'#f0f0f0',padding:'12px 20px',display:'flex',justifyContent:'space-between',alignItems:'center'}}>
+      <span style={{color:oscuro?'#00d4ff':'#333',fontWeight:'900',fontSize:'18px'}}>⚛ MiApp</span>
+      <button onClick={toggle} style={{padding:'7px 16px',borderRadius:'20px',border:'none',cursor:'pointer',background:oscuro?'#00d4ff':'#333',color:oscuro?'#000':'#fff',fontWeight:'bold'}}>
+        {oscuro?'☀️ Claro':'🌙 Oscuro'}
+      </button>
+    </nav>
+  );
+}
+
+function Tarjeta({titulo, texto}) {
+  const {oscuro} = useTheme();
+  return (
+    <div style={{background:oscuro?'#0d1f3c':'#fff',border:'1px solid '+(oscuro?'#1e3a5f':'#e5e5e5'),borderRadius:'12px',padding:'20px',margin:'10px',transition:'all 0.3s'}}>
+      <h3 style={{color:oscuro?'#00d4ff':'#0099cc',marginBottom:'8px'}}>{titulo}</h3>
+      <p style={{color:oscuro?'#8ab4d4':'#666',fontSize:'13px'}}>{texto}</p>
+    </div>
+  );
+}
+
+function App() {
+  return (
+    <ThemeProvider>
+      <AppContent />
+    </ThemeProvider>
+  );
+}
+
+function AppContent() {
+  const {oscuro} = useTheme();
+  return (
+    <div style={{minHeight:'100vh',background:oscuro?'#050a14':'#f5f5f5',transition:'background 0.3s'}}>
+      <Navbar />
+      <div style={{padding:'20px'}}>
+        <h2 style={{color:oscuro?'#e8f4fd':'#333',marginBottom:'16px',paddingLeft:'10px'}}>Tema: {oscuro?'🌙 Oscuro':'☀️ Claro'}</h2>
+        <Tarjeta titulo="useState" texto="Estado local en componentes funcionales React."/>
+        <Tarjeta titulo="useEffect" texto="Efectos secundarios después del renderizado."/>
+        <Tarjeta titulo="Context API" texto="Este mismo tema usa Context API. Sin prop drilling."/>
+      </div>
+    </div>
+  );
+}
+export default App;`}
+];
+
+
+// ═══ CONCEPT MAP ═══
+const CONCEPT_MAP = [
+  {ico:'⚛️',title:'React Core',desc:'Librería de UI. Componentes + Virtual DOM',mod:'m1',color:'var(--cyan)'},
+  {ico:'⚙️',title:'Setup / Vite',desc:'Node.js + npm + Vite. Entorno de desarrollo.',mod:'m2',color:'var(--green)'},
+  {ico:'🧩',title:'JSX',desc:'Sintaxis especial. JS + HTML en uno.',mod:'m3',color:'#8be9fd'},
+  {ico:'📦',title:'Props',desc:'Datos de padre a hijo. Inmutables.',mod:'m4',color:'#8be9fd'},
+  {ico:'🔄',title:'useState',desc:'Estado local. Memoria del componente.',mod:'m5',color:'var(--orange)'},
+  {ico:'⚡',title:'useEffect',desc:'Efectos secundarios. Ciclo de vida.',mod:'m6',color:'var(--orange)'},
+  {ico:'📋',title:'Listas y Keys',desc:'Renderizado dinámico con .map().',mod:'m7',color:'var(--cyan)'},
+  {ico:'📝',title:'Formularios',desc:'Controlled components. Validación.',mod:'m8',color:'#8be9fd'},
+  {ico:'🗺️',title:'React Router',desc:'Navegación SPA sin recargar.',mod:'m9',color:'var(--gold)'},
+  {ico:'🌍',title:'Context API',desc:'Estado global sin Redux.',mod:'m10',color:'var(--purple)'},
+  {ico:'🎣',title:'Hooks Avanzados',desc:'useMemo, useCallback, useRef, useReducer.',mod:'m11',color:'var(--orange)'},
+  {ico:'🌐',title:'Fetch / APIs',desc:'Conectar con el backend.',mod:'m12',color:'var(--green)'},
+  {ico:'🗃️',title:'Redux Toolkit',desc:'Estado global escalable.',mod:'m13',color:'var(--purple)'},
+  {ico:'🎨',title:'Estilos',desc:'CSS Modules, Tailwind, inline.',mod:'m14',color:'#ff79c6'},
+  {ico:'🧪',title:'Testing',desc:'Vitest + React Testing Library.',mod:'m15',color:'var(--red)'},
+  {ico:'🚀',title:'Deploy',desc:'Vercel, Netlify, producción.',mod:'m16',color:'var(--green)'},
+  {ico:'📘',title:'TypeScript',desc:'El siguiente paso natural.',mod:'',color:'var(--text3)'},
+  {ico:'⬛',title:'Next.js',desc:'React + SSR + App Router.',mod:'',color:'var(--text3)'}
+];
+
+// ═══ EDITOR EXAMPLES ═══
+const EDITOR_EXAMPLES = {
+  counter:{
+    html:`<div id="app">
+  <h1 id="num">0</h1>
+  <button id="dec">−</button>
+  <button id="reset">Reset</button>
+  <button id="inc">+</button>
+</div>`,
+    css:`body{font-family:sans-serif;display:flex;justify-content:center;align-items:center;min-height:100vh;margin:0;background:#050a14;}
+#app{text-align:center;}
+h1{font-size:6rem;color:#00d4ff;margin:0 0 20px;transition:color .3s;}
+button{font-size:1.4rem;padding:10px 26px;margin:0 5px;border:none;border-radius:8px;cursor:pointer;font-weight:bold;}
+#dec{background:#ff4466;color:white;}
+#inc{background:#00cc66;color:white;}
+#reset{background:#444;color:white;}`,
+    js:`let count=0;
+const num=document.getElementById('num');
+const update=()=>{num.style.color=count>0?'#00cc66':count<0?'#ff4466':'#00d4ff';};
+document.getElementById('inc').onclick=()=>{count++;num.textContent=count;update();};
+document.getElementById('dec').onclick=()=>{count--;num.textContent=count;update();};
+document.getElementById('reset').onclick=()=>{count=0;num.textContent=0;update();};`
+  },
+  flexbox:{
+    html:`<div class="container">
+  <div class="box">1</div><div class="box">2</div>
+  <div class="box">3</div><div class="box">4</div><div class="box">5</div>
+</div>
+<div class="controls">
+  <select id="jc"><option value="flex-start">justify-content: flex-start</option><option value="center">center</option><option value="flex-end">flex-end</option><option value="space-between">space-between</option><option value="space-around">space-around</option><option value="space-evenly">space-evenly</option></select>
+  <select id="ai"><option value="stretch">align-items: stretch</option><option value="flex-start">flex-start</option><option value="center">center</option><option value="flex-end">flex-end</option></select>
+</div>`,
+    css:`body{font-family:sans-serif;padding:20px;background:#050a14;color:#e8f4fd;}
+.container{display:flex;flex-wrap:wrap;gap:10px;background:#0a1628;border:2px solid #00d4ff;border-radius:12px;padding:20px;min-height:120px;transition:all .3s;margin-bottom:20px;}
+.box{width:75px;height:75px;background:linear-gradient(135deg,#0099cc,#00d4ff);border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:1.4rem;font-weight:bold;color:#050a14;}
+.controls{display:flex;gap:10px;flex-wrap:wrap;}
+select{padding:8px 12px;background:#0d1f3c;color:#00d4ff;border:1px solid #00d4ff;border-radius:8px;font-size:13px;cursor:pointer;}`,
+    js:`const c=document.querySelector('.container');
+document.getElementById('jc').onchange=e=>c.style.justifyContent=e.target.value;
+document.getElementById('ai').onchange=e=>c.style.alignItems=e.target.value;`
+  },
+  fetch:{
+    html:`<div id="app">
+  <h2>🌐 Fetch API Demo</h2>
+  <button id="btn">Cargar usuarios</button>
+  <div id="out"></div>
+</div>`,
+    css:`body{font-family:sans-serif;padding:20px;background:#050a14;color:#e8f4fd;}
+h2{color:#00d4ff;}
+button{background:#0099cc;color:white;border:none;padding:10px 20px;border-radius:8px;cursor:pointer;margin-bottom:16px;}
+.user{border:1px solid #1e3a5f;border-radius:8px;padding:12px;margin-bottom:8px;}
+.user strong{color:#00d4ff;}
+.user p{color:#8ab4d4;font-size:13px;margin:4px 0 0;}
+.err{color:#ff4466;}`,
+    js:`document.getElementById('btn').addEventListener('click',async()=>{
+  const out=document.getElementById('out');
+  out.innerHTML='<p>⏳ Cargando...</p>';
+  try{
+    const res=await fetch('https://jsonplaceholder.typicode.com/users');
+    if(!res.ok) throw new Error('Error '+res.status);
+    const users=await res.json();
+    out.innerHTML=users.map(u=>\`<div class="user"><strong>\${u.name}</strong><p>📧 \${u.email}</p></div>\`).join('');
+  }catch(e){out.innerHTML='<p class="err">❌ '+e.message+'</p>';}
+});`
+  },
+  animation:{
+    html:`<div class="solar">
+  <div class="sun">☀️</div>
+  <div class="orbit o1"><div class="planet">🌍</div></div>
+  <div class="orbit o2"><div class="planet">🔴</div></div>
+  <div class="orbit o3"><div class="planet">💙</div></div>
+</div>
+<p style="text-align:center;color:#8ab4d4;font-family:sans-serif">CSS Animations — haz clic en una órbita para cambiar velocidad</p>`,
+    css:`body{background:#050a14;display:flex;flex-direction:column;justify-content:center;align-items:center;min-height:100vh;margin:0;}
+.solar{position:relative;width:280px;height:280px;display:flex;align-items:center;justify-content:center;}
+.sun{font-size:2.5rem;position:absolute;z-index:2;}
+.orbit{position:absolute;border:1px solid rgba(0,212,255,.2);border-radius:50%;animation:orbit linear infinite;cursor:pointer;}
+.o1{width:100px;height:100px;animation-duration:5s;}
+.o2{width:165px;height:165px;animation-duration:9s;}
+.o3{width:235px;height:235px;animation-duration:14s;}
+@keyframes orbit{to{transform:rotate(360deg);}}
+.planet{font-size:1.3rem;position:absolute;top:-13px;left:50%;transform:translateX(-50%);}`,
+    js:`document.querySelectorAll('.orbit').forEach((el,i)=>{
+  const base=[5,9,14][i];let speed=base;
+  el.addEventListener('click',()=>{
+    speed=speed>1?speed/2:base;
+    el.style.animationDuration=speed+'s';
+  });
+});`
+  },
+  form:{
+    html:`<form id="f">
+  <h2>📬 Formulario de contacto</h2>
+  <label>Nombre *</label><input type="text" name="nombre" placeholder="Tu nombre">
+  <label>Email *</label><input type="email" name="email" placeholder="tu@email.com">
+  <label>Mensaje *</label><textarea name="msg" rows="4" placeholder="Escribe tu mensaje..."></textarea>
+  <button type="submit">Enviar →</button>
+  <div id="result"></div>
+</form>`,
+    css:`body{font-family:sans-serif;background:#050a14;display:flex;justify-content:center;align-items:center;min-height:100vh;margin:0;padding:20px;}
+form{background:#0a1628;border:1px solid #1e3a5f;border-radius:14px;padding:28px;max-width:420px;width:100%;}
+h2{color:#00d4ff;margin-bottom:18px;}
+label{display:block;font-size:11px;font-weight:700;color:#8ab4d4;margin-bottom:4px;text-transform:uppercase;letter-spacing:1px;margin-top:12px;}
+input,textarea{width:100%;padding:10px;background:#0d1f3c;border:2px solid #1e3a5f;border-radius:8px;color:#e8f4fd;font-size:14px;font-family:inherit;outline:none;box-sizing:border-box;transition:border .2s;}
+input:focus,textarea:focus{border-color:#00d4ff;}
+button{width:100%;padding:12px;background:linear-gradient(135deg,#0099cc,#00d4ff);color:#050a14;border:none;border-radius:8px;font-size:15px;font-weight:700;cursor:pointer;margin-top:14px;}
+.ok{color:#00ff88;margin-top:10px;font-size:13px;}.err{color:#ff4466;margin-top:10px;font-size:13px;}`,
+    js:`document.getElementById('f').addEventListener('submit',e=>{
+  e.preventDefault();
+  const d=new FormData(e.target);
+  const n=d.get('nombre').trim(),em=d.get('email').trim(),m=d.get('msg').trim();
+  const r=document.getElementById('result');
+  if(!n||!em||!m){r.innerHTML='<p class="err">❌ Todos los campos son obligatorios</p>';return;}
+  if(!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(em)){r.innerHTML='<p class="err">❌ Email inválido</p>';return;}
+  r.innerHTML='<p class="ok">✅ Mensaje enviado, '+n+'!</p>';
+  e.target.reset();
+});`
+  }
+};
+
+// ═══ RETOS DIARIOS ═══
+const RETOS = [
+  {id:0,title:'Contador con límite',desc:'Crea un contador que no pueda pasar de 10 ni bajar de 0. Muestra un mensaje cuando llegue a cada extremo.',dificultad:'Fácil',conceptos:'useState, condicionales',xp:15,coins:10,
+   pista:'Usa condicionales en el onClick: onClick={() => count < 10 && setCount(count+1)}'},
+  {id:1,title:'Semáforo React',desc:'Crea un componente Semaforo con tres estados: rojo, amarillo, verde. Al hacer clic avanza al siguiente estado en ciclo.',dificultad:'Fácil',conceptos:'useState, arrays, índices',xp:15,coins:10,
+   pista:"const colores = ['rojo','amarillo','verde']. Guarda el índice en estado y avanza con (idx+1)%3"},
+  {id:2,title:'Lista de compras',desc:'App de lista de compras donde puedes añadir ítems, marcarlos como comprados (tachado) y filtrar entre todos/pendientes/comprados.',dificultad:'Medio',conceptos:'useState, .filter(), formularios',xp:25,coins:15,
+   pista:'Tres estados: items[], texto (input), filtro. Usa .filter() para cada vista.'},
+  {id:3,title:'Calculadora de IMC',desc:'Formulario con peso y altura. Calcula el IMC al enviar y muestra el resultado con su clasificación (bajo peso, normal, sobrepeso, obesidad).',dificultad:'Medio',conceptos:'useState, formularios, cálculos',xp:25,coins:15,
+   pista:'IMC = peso / (altura*altura). Usa condicionales para clasificar el resultado.'},
+  {id:4,title:'Cita aleatoria',desc:'Botón que muestra una cita aleatoria de un array de 5+ citas con animación de fade. La cita cambia cada vez que pulsas.',dificultad:'Fácil',conceptos:'useState, arrays, Math.random()',xp:15,coins:10,
+   pista:'useState para el índice o la cita directa. Math.floor(Math.random() * citas.length)'},
+  {id:5,title:'Timer Pomodoro',desc:'Timer Pomodoro de 25 minutos con useEffect. Botones de inicio, pausa y reset. Muestra mm:ss y cambia de color al acabar.',dificultad:'Difícil',conceptos:'useEffect, setInterval, cleanup',xp:40,coins:25,
+   pista:'useEffect con setInterval cuando activo=true. Cleanup con clearInterval. Pausa seteando activo=false.'},
+  {id:6,title:'Buscador de películas',desc:'Input de búsqueda que llama a la API de OMDb (gratuita) con debounce de 500ms. Muestra pósters, títulos y años.',dificultad:'Difícil',conceptos:'useEffect, fetch, debounce, AbortController',xp:40,coins:25,
+   pista:'API: https://www.omdbapi.com/?s=BUSQUEDA&apikey=trilogy. useEffect con setTimeout para el debounce.'}
+];
+
+// ═══ MAPA CONCEPTUAL ═══
+const CONCEPT_MAP = [
+  {ico:'⚛️',title:'React Core',desc:'Librería de UI. Componentes + Virtual DOM',mod:'m1',color:'var(--cyan)'},
+  {ico:'⚙️',title:'Setup / Vite',desc:'Entorno de desarrollo. Node.js + npm',mod:'m2',color:'var(--green)'},
+  {ico:'🧩',title:'JSX',desc:'Sintaxis especial. JS + HTML en uno',mod:'m3',color:'var(--cyan)'},
+  {ico:'📦',title:'Props',desc:'Datos de padre a hijo. Inmutables.',mod:'m4',color:'#8be9fd'},
+  {ico:'🔄',title:'useState',desc:'Estado local. Memoria del componente.',mod:'m5',color:'var(--orange)'},
+  {ico:'⚡',title:'useEffect',desc:'Efectos secundarios. Ciclo de vida.',mod:'m6',color:'var(--orange)'},
+  {ico:'🎣',title:'Hooks Avanzados',desc:'useMemo, useCallback, useRef, useReducer',mod:'m11',color:'var(--orange)'},
+  {ico:'🌍',title:'Context API',desc:'Estado global sin Redux.',mod:'m10',color:'var(--purple)'},
+  {ico:'🗃️',title:'Redux Toolkit',desc:'Estado global escalable.',mod:'m13',color:'var(--purple)'},
+  {ico:'🗺️',title:'React Router',desc:'Navegación SPA.',mod:'m9',color:'var(--gold)'},
+  {ico:'🌐',title:'Fetch / APIs',desc:'Conectar con el backend.',mod:'m12',color:'#50fa7b'},
+  {ico:'📋',title:'Listas y Keys',desc:'Renderizado dinámico de colecciones.',mod:'m7',color:'#8be9fd'},
+  {ico:'📝',title:'Formularios',desc:'Controlled components. Validación.',mod:'m8',color:'#8be9fd'},
+  {ico:'🎨',title:'Estilos',desc:'CSS Modules, Tailwind, inline.',mod:'m14',color:'#ff79c6'},
+  {ico:'🧪',title:'Testing',desc:'Vitest + React Testing Library.',mod:'m15',color:'var(--red)'},
+  {ico:'🚀',title:'Deploy',desc:'Vercel, Netlify, producción.',mod:'m16',color:'var(--green)'},
+  {ico:'📘',title:'TypeScript',desc:'El siguiente paso natural.',mod:'',color:'var(--text3)'},
+  {ico:'⬛',title:'Next.js',desc:'React + SSR + App Router.',mod:'',color:'var(--text3)'}
+];
+
+// ═══ EDITOR EXAMPLES ═══
+const EDITOR_EXAMPLES = {
+  counter:{
+    html:`<div id="app">
+  <h1 id="num">0</h1>
+  <button id="dec">−</button>
+  <button id="reset">Reset</button>
+  <button id="inc">+</button>
+</div>`,
+    css:`body { font-family: sans-serif; display: flex; justify-content: center; align-items: center; min-height: 100vh; margin: 0; background: #0a0a1a; }
+#app { text-align: center; }
+h1 { font-size: 6rem; color: #00d4ff; margin: 0 0 20px; transition: color 0.3s; }
+button { font-size: 1.5rem; padding: 10px 28px; margin: 0 6px; border: none; border-radius: 8px; cursor: pointer; font-weight: bold; }
+#dec { background: #ff4466; color: white; }
+#inc { background: #00cc66; color: white; }
+#reset { background: #444; color: white; }`,
+    js:`let count = 0;
+const num = document.getElementById('num');
+const updateColor = () => {
+  num.style.color = count > 0 ? '#00cc66' : count < 0 ? '#ff4466' : '#00d4ff';
+};
+document.getElementById('inc').onclick = () => { count++; num.textContent = count; updateColor(); };
+document.getElementById('dec').onclick = () => { count--; num.textContent = count; updateColor(); };
+document.getElementById('reset').onclick = () => { count = 0; num.textContent = count; updateColor(); };`
+  },
+  flexbox:{
+    html:`<div class="container">
+  <div class="box">1</div>
+  <div class="box">2</div>
+  <div class="box">3</div>
+  <div class="box">4</div>
+  <div class="box">5</div>
+</div>
+<div class="controls">
+  <select id="justify">
+    <option value="flex-start">justify: flex-start</option>
+    <option value="center">justify: center</option>
+    <option value="flex-end">justify: flex-end</option>
+    <option value="space-between">justify: space-between</option>
+    <option value="space-around">justify: space-around</option>
+    <option value="space-evenly">justify: space-evenly</option>
+  </select>
+  <select id="align">
+    <option value="stretch">align: stretch</option>
+    <option value="flex-start">align: flex-start</option>
+    <option value="center">align: center</option>
+    <option value="flex-end">align: flex-end</option>
+  </select>
+</div>`,
+    css:`body { font-family: sans-serif; padding: 20px; background: #050a14; color: #e8f4fd; }
+.container { display: flex; flex-wrap: wrap; gap: 10px; background: #0a1628; border: 2px solid #00d4ff; border-radius: 12px; padding: 20px; min-height: 120px; transition: all 0.3s; margin-bottom: 20px; }
+.box { width: 80px; height: 80px; background: linear-gradient(135deg, #0099cc, #00d4ff); border-radius: 8px; display: flex; align-items: center; justify-content: center; font-size: 1.5rem; font-weight: bold; color: #050a14; }
+.controls { display: flex; gap: 10px; flex-wrap: wrap; }
+select { padding: 8px 12px; background: #0d1f3c; color: #00d4ff; border: 1px solid #00d4ff; border-radius: 8px; font-size: 13px; cursor: pointer; }`,
+    js:`const container = document.querySelector('.container');
+document.getElementById('justify').onchange = e => container.style.justifyContent = e.target.value;
+document.getElementById('align').onchange = e => container.style.alignItems = e.target.value;`
+  },
+  fetch:{
+    html:`<div id="app">
+  <h2>🌐 Fetch API Demo</h2>
+  <button id="btn">Cargar usuarios</button>
+  <div id="output"></div>
+</div>`,
+    css:`body { font-family: sans-serif; padding: 20px; background: #050a14; color: #e8f4fd; }
+h2 { color: #00d4ff; }
+button { background: #0099cc; color: white; border: none; padding: 10px 20px; border-radius: 8px; cursor: pointer; font-size: 14px; margin-bottom: 16px; }
+button:hover { background: #00d4ff; }
+.user { border: 1px solid #1e3a5f; border-radius: 8px; padding: 12px; margin-bottom: 8px; }
+.user strong { color: #00d4ff; }
+.user p { color: #8ab4d4; font-size: 13px; margin: 4px 0 0; }
+#output { min-height: 40px; }
+.loading { color: #8ab4d4; font-style: italic; }
+.error { color: #ff4466; }`,
+    js:`document.getElementById('btn').addEventListener('click', async () => {
+  const out = document.getElementById('output');
+  out.innerHTML = '<p class="loading">⏳ Cargando...</p>';
+  try {
+    const res = await fetch('https://jsonplaceholder.typicode.com/users');
+    if (!res.ok) throw new Error('Error ' + res.status);
+    const users = await res.json();
+    out.innerHTML = users.map(u => \`
+      <div class="user">
+        <strong>\${u.name}</strong>
+        <p>📧 \${u.email} · 🌐 \${u.website}</p>
+      </div>
+    \`).join('');
+  } catch(e) {
+    out.innerHTML = '<p class="error">❌ ' + e.message + '</p>';
+  }
+});`
+  },
+  animation:{
+    html:`<div id="app">
+  <div class="orbit-container">
+    <div class="sun">☀️</div>
+    <div class="orbit" id="orbit1"><div class="planet p1">🌍</div></div>
+    <div class="orbit" id="orbit2"><div class="planet p2">🔴</div></div>
+    <div class="orbit" id="orbit3"><div class="planet p3">💙</div></div>
+  </div>
+  <p>Sistema solar CSS puro</p>
+</div>`,
+    css:`body { background: #050a14; display: flex; justify-content: center; align-items: center; min-height: 100vh; margin: 0; font-family: sans-serif; color: #8ab4d4; flex-direction: column; gap: 20px; }
+.orbit-container { position: relative; width: 280px; height: 280px; display: flex; align-items: center; justify-content: center; }
+.sun { font-size: 2.5rem; position: absolute; z-index: 2; }
+.orbit { position: absolute; border: 1px solid rgba(0,212,255,0.2); border-radius: 50%; animation: orbit linear infinite; }
+#orbit1 { width: 100px; height: 100px; animation-duration: 5s; }
+#orbit2 { width: 160px; height: 160px; animation-duration: 9s; }
+#orbit3 { width: 230px; height: 230px; animation-duration: 14s; }
+@keyframes orbit { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }
+.planet { font-size: 1.3rem; position: absolute; top: -12px; left: 50%; transform: translateX(-50%); }`,
+    js:`// Animación CSS pura, no necesita JS
+// Pero podemos añadir velocidad interactiva
+document.querySelectorAll('.orbit').forEach((el, i) => {
+  const speeds = [5, 9, 14];
+  let speed = speeds[i];
+  el.addEventListener('click', () => {
+    speed = speed > 1 ? speed / 2 : speeds[i];
+    el.style.animationDuration = speed + 's';
+  });
+});`
+  },
+  form:{
+    html:`<form id="contactForm">
+  <h2>📬 Contáctanos</h2>
+  <div class="field"><label>Nombre *</label><input type="text" name="nombre" placeholder="Tu nombre"></div>
+  <div class="field"><label>Email *</label><input type="email" name="email" placeholder="tu@email.com"></div>
+  <div class="field"><label>Mensaje *</label><textarea name="mensaje" rows="4" placeholder="Escribe tu mensaje..."></textarea></div>
+  <button type="submit">Enviar mensaje →</button>
+  <div id="result"></div>
+</form>`,
+    css:`body { font-family: sans-serif; background: #050a14; display: flex; justify-content: center; align-items: center; min-height: 100vh; margin: 0; padding: 20px; }
+form { background: #0a1628; border: 1px solid #1e3a5f; border-radius: 14px; padding: 28px; max-width: 420px; width: 100%; }
+h2 { color: #00d4ff; margin-bottom: 20px; }
+.field { margin-bottom: 14px; }
+label { display: block; font-size: 12px; font-weight: 600; color: #8ab4d4; margin-bottom: 5px; text-transform: uppercase; letter-spacing: 1px; }
+input, textarea { width: 100%; padding: 10px 12px; background: #0d1f3c; border: 2px solid #1e3a5f; border-radius: 8px; color: #e8f4fd; font-size: 14px; font-family: inherit; outline: none; transition: border-color 0.2s; box-sizing: border-box; }
+input:focus, textarea:focus { border-color: #00d4ff; }
+button { width: 100%; padding: 12px; background: linear-gradient(135deg, #0099cc, #00d4ff); color: #050a14; border: none; border-radius: 8px; font-size: 15px; font-weight: 700; cursor: pointer; margin-top: 6px; }
+#result { margin-top: 12px; font-size: 13px; text-align: center; }
+.ok { color: #00ff88; } .err { color: #ff4466; }`,
+    js:`document.getElementById('contactForm').addEventListener('submit', e => {
+  e.preventDefault();
+  const data = new FormData(e.target);
+  const nombre = data.get('nombre').trim();
+  const email = data.get('email').trim();
+  const mensaje = data.get('mensaje').trim();
+  const result = document.getElementById('result');
+  if (!nombre || !email || !mensaje) {
+    result.innerHTML = '<p class="err">❌ Todos los campos son obligatorios</p>';
+    return;
+  }
+  if (!/^[^\\s@]+@[^\\s@]+\\.[^\\s@]+$/.test(email)) {
+    result.innerHTML = '<p class="err">❌ Email inválido</p>';
+    return;
+  }
+  result.innerHTML = '<p class="ok">✅ Mensaje enviado correctamente, ' + nombre + '!</p>';
+  e.target.reset();
+});`
+  }
+};
+// ═══ STATE ═══
+let S={coins:0,xp:0,level:1,streak:0,completed:[],claimed:[],achievements:['a1'],fcSeen:[],retoDone:[]};
+function loadS(){try{const d=localStorage.getItem('igr5');if(d)S=JSON.parse(d);}catch(e){}if(!S.achievements)S.achievements=['a1'];if(!S.fcSeen)S.fcSeen=[];if(!S.retoDone)S.retoDone=[];if(!S.achievements.includes('a1'))S.achievements.push('a1');}
+function saveS(){localStorage.setItem('igr5',JSON.stringify(S));}
+function resetProgress(){if(!confirm('¿Reiniciar todo el progreso?'))return;localStorage.removeItem('igr5');location.reload();}
+
+// ═══ NAVIGATION ═══
+function goPanel(id){
+  document.querySelectorAll('.panel').forEach(p=>p.classList.remove('active'));
+  const el=document.getElementById('panel-'+id);
+  if(el)el.classList.add('active');
+  document.querySelectorAll('.si').forEach(i=>i.classList.remove('active'));
+  const nav=document.getElementById('nav-'+id);
+  if(nav)nav.classList.add('active');
+  if(id==='dashboard')renderGrid();
+  if(id==='logros')renderAch();
+  if(id==='recompensas')renderRew();
+  if(id==='niveles')renderLevels();
+  if(id==='roadmap')renderRoadmap();
+  if(id==='flashcards'){renderCard();renderFCList();}
+  if(id==='simulador')renderSimCards();
+  if(id==='recursos')renderRecursos();
+  if(id==='reto')renderReto();
+  if(id==='mapa')renderMapa();
+  if(id==='editor')initEditor();
+  closeSidebar();
+  window.scrollTo(0,0);
+}
+
+function goLesson(id){
+  const mod=MODULES.find(m=>m.id===id);if(!mod)return;
+  document.querySelectorAll('.panel').forEach(p=>p.classList.remove('active'));
+  document.getElementById('panel-lesson').classList.add('active');
+  document.getElementById('lesson-crumb').textContent='M'+id.replace('m','').padStart(2,'0')+' — '+mod.title;
+  document.querySelectorAll('.si').forEach(i=>i.classList.remove('active'));
+  const nav=document.getElementById('nav-'+id);if(nav)nav.classList.add('active');
+  document.getElementById('lesson-content').innerHTML=buildLesson(id);
+  setTimeout(()=>setupInteractive(),80);
+  closeSidebar();window.scrollTo(0,0);
+}
+
+function toggleSidebar(){document.getElementById('sidebar').classList.toggle('open');document.getElementById('overlay').classList.toggle('show');}
+function closeSidebar(){document.getElementById('sidebar').classList.remove('open');document.getElementById('overlay').classList.remove('show');}
+
+// ═══ COMPLETE MODULE ═══
+function completeModule(id){
+  const mod=MODULES.find(m=>m.id===id);
+  if(S.completed.includes(id)){toast('⚠️','Ya completado','Este módulo ya estaba terminado.');return;}
+  S.completed.push(id);S.coins+=mod.coins;S.xp+=mod.xp;S.streak++;
+  updateLevel();checkAch();saveS();updateUI();
+  toast('🎉','¡Módulo completado!','+'+mod.xp+' XP · +'+mod.coins+' 🔵');
+  const btn=document.querySelector('.cbtn');
+  if(btn){btn.disabled=true;btn.textContent='✅ Completado';}
+  markDone(id);
+}
+function updateLevel(){for(let i=LEVELS.length-1;i>=0;i--){if(S.xp>=LEVELS[i].xp){S.level=LEVELS[i].n;break;}}}
+function checkAch(){
+  ACHIEVEMENTS.forEach(a=>{
+    if(S.achievements.includes(a.id))return;
+    let ok=a.cond==='always'?true:a.cond==='all'?S.completed.length===16:a.cond==='coins300'?S.coins>=300:S.completed.includes(a.cond);
+    if(ok){S.achievements.push(a.id);setTimeout(()=>toast('🏅','¡Logro!',a.name),1500);}
+  });
+}
+function markDone(id){
+  const nav=document.getElementById('nav-'+id);
+  if(nav&&!nav.querySelector('.done')){const d=document.createElement('span');d.className='done';d.textContent='✓';nav.appendChild(d);}
+}
+
+// ═══ UI UPDATE ═══
+function updateUI(){
+  const pct=Math.round((S.completed.length/16)*100);
+  const s=(id,v)=>{const e=document.getElementById(id);if(e)e.textContent=v;};
+  const w=(id,v)=>{const e=document.getElementById(id);if(e)e.style.width=v;};
+  s('st-c',S.coins);s('st-l',S.level);s('st-d',S.completed.length);s('st-s',S.streak);
+  s('sb-pct',pct+'%');w('sb-bar',pct+'%');
+  s('dash-pct',pct+'%');w('dash-bar',pct+'%');
+  s('d-c',S.coins);s('d-l',S.level);s('d-d',S.completed.length);s('d-x',S.xp);
+  MODULES.forEach(m=>{if(S.completed.includes(m.id))markDone(m.id);});
+}
+
+function renderGrid(){
+  const g=document.getElementById('modules-grid');if(!g)return;
+  g.innerHTML=MODULES.map(m=>{
+    const done=S.completed.includes(m.id);
+    return'<div class="mc'+(done?' done':'')+'" onclick="goLesson(\''+m.id+'\')">'+
+      '<div class="cn">MÓDULO '+m.id.replace('m','').padStart(2,'0')+'</div>'+
+      '<div class="ci">'+m.ico+'</div>'+
+      '<div class="ct">'+m.title+'</div>'+
+      '<div class="cd">'+m.desc+'</div>'+
+      '<div class="cp">'+m.pills.map(p=>'<span class="pill">'+p+'</span>').join('')+
+      '<span class="pill gold">+'+m.xp+'xp</span></div></div>';
+  }).join('');
+}
+
+function renderAch(){
+  const g=document.getElementById('ach-grid');if(!g)return;
+  g.innerHTML=ACHIEVEMENTS.map(a=>'<div class="ac'+(S.achievements.includes(a.id)?' unlocked':'')+'"><div class="aico">'+a.ico+'</div><div class="an">'+a.name+'</div><div class="ad">'+a.desc+'</div></div>').join('');
+}
+
+function renderRew(){
+  const g=document.getElementById('rewards-grid');if(!g)return;
+  g.innerHTML=REWARDS.map(r=>{
+    const prog=r.type==='modules'?S.completed.length:r.type==='coins'?S.coins:S.level;
+    const pct=Math.min(100,Math.round(prog/r.req*100));
+    const av=prog>=r.req,cl=S.claimed.includes(r.id);
+    return'<div class="rc'+(av&&!cl?' av':'')+'">'+
+      '<div class="rico">'+r.ico+'</div><div class="rn">'+r.name+'</div><div class="rd">'+r.desc+'</div>'+
+      '<div style="width:100%"><div class="pl" style="display:flex;justify-content:space-between;font-size:10px;color:var(--text3);margin-bottom:3px"><span>'+Math.min(prog,r.req)+'/'+r.req+'</span></div>'+
+      '<div class="pbar"><div class="pf" style="width:'+pct+'%"></div></div></div>'+
+      (av&&!cl?'<button class="rclaim" onclick="claimRew(\''+r.id+'\')">Reclamar 🎁</button>':cl?'<span style="color:var(--green);font-size:11px">✅ Reclamada</span>':'<span style="color:var(--text3);font-size:10px">🔒 Bloqueada</span>')+'</div>';
+  }).join('');
+}
+function claimRew(id){S.claimed.push(id);saveS();renderRew();toast('🎁','¡Recompensa!',REWARDS.find(r=>r.id===id).name);}
+
+function renderLevels(){
+  const tb=document.getElementById('levels-tbody');if(!tb)return;
+  const cur=LEVELS.find(l=>l.n===S.level)||LEVELS[0];
+  const nxt=LEVELS.find(l=>l.n===S.level+1);
+  document.getElementById('lv-circle').textContent=S.level;
+  document.getElementById('lv-name').textContent=cur.name;
+  if(nxt){document.getElementById('lv-next').textContent=nxt.name+' → '+(nxt.xp-S.xp)+' XP';document.getElementById('xp-bar').style.width=Math.min(100,Math.round((S.xp-cur.xp)/(nxt.xp-cur.xp)*100))+'%';}
+  else{document.getElementById('lv-next').textContent='¡Nivel máximo!';document.getElementById('xp-bar').style.width='100%';}
+  tb.innerHTML=LEVELS.map(l=>'<tr class="'+(l.n===S.level?'cur':'')+'"><td><span class="lv-badge">Lv '+l.n+'</span></td><td>'+l.name+'</td><td>'+l.xp+' XP</td><td>'+(l.n===1?'Acceso completo':l.n===5?'🔥 Badge':l.n===10?'👑 Expert Badge':'—')+'</td></tr>').join('');
+}
+
+function renderRoadmap(){
+  const g=document.getElementById('roadmap-content');if(!g)return;
+  g.innerHTML=ROADMAP_DATA.map((ph,pi)=>{
+    const dc=ph.mods.filter(m=>S.completed.includes(m)).length;
+    return'<div class="rmp"><div class="rmh" onclick="this.nextElementSibling.style.display=this.nextElementSibling.style.display===\'none\'?\'block\':\'none\'">'+
+      '<h4 style="color:'+ph.color+'">'+ph.title+'</h4>'+(ph.mods.length?'<span style="font-size:10px;color:var(--text3)">'+dc+'/'+ph.mods.length+'</span>':'')+
+      '</div><div class="rmb">'+
+      ph.items.map((item,ii)=>{
+        const mod=ph.mods[ii];const done=mod&&S.completed.includes(mod);
+        return'<div class="rmi"><div class="rmd" style="background:'+(done?'var(--green)':'var(--border2)')+'"></div>'+
+          '<span style="'+(done?'color:var(--green)':'')+'">'+item+(done?' ✓':'')+'</span>'+
+          (mod?'<span class="rml" onclick="goLesson(\''+mod+'\')">→ módulo</span>':'')+'</div>';
+      }).join('')+'</div></div>';
+  }).join('');
+}
+
+function renderRecursos(){
+  const g=document.getElementById('recursos-grid');if(!g)return;
+  g.innerHTML=RECURSOS_DATA.map(r=>'<div class="mc" onclick="window.open(\''+r.url+'\',\'_blank\')"><div class="ci">'+r.ico+'</div><div class="ct">'+r.title+'</div><div class="cd">'+r.desc+'</div><div class="cp"><span class="pill">'+r.tag+'</span><span class="pill g">Gratis</span></div></div>').join('');
+}
+
+// ═══ FLASHCARDS ═══
+let fcIdx=0;
+function renderCard(){
+  const fc=FLASHCARDS[fcIdx];
+  const q=document.getElementById('fc-q'),a=document.getElementById('fc-a'),c=document.getElementById('fc-counter');
+  if(q)q.textContent=fc.q;if(a)a.textContent=fc.a;
+  if(c)c.textContent='Tarjeta '+(fcIdx+1)+' de '+FLASHCARDS.length;
+  const card=document.getElementById('fc-card');if(card)card.classList.remove('flipped');
+  if(!S.fcSeen.includes(fcIdx)){S.fcSeen.push(fcIdx);S.coins+=2;saveS();updateUI();}
+}
+function flipCard(){const c=document.getElementById('fc-card');if(c)c.classList.toggle('flipped');}
+function nextCard(){fcIdx=(fcIdx+1)%FLASHCARDS.length;renderCard();}
+function prevCard(){fcIdx=(fcIdx-1+FLASHCARDS.length)%FLASHCARDS.length;renderCard();}
+function renderFCList(){
+  const l=document.getElementById('fc-list');if(!l)return;
+  l.innerHTML=FLASHCARDS.map((fc,i)=>'<div onclick="fcIdx='+i+';renderCard();" style="background:var(--bg3);border:1px solid '+(i===fcIdx?'var(--cyan)':'var(--border)')
+    +';border-radius:7px;padding:9px 11px;cursor:pointer;transition:border .15s" '
+    +'onmouseover="this.style.borderColor=\'var(--cyan)\'" onmouseout="this.style.borderColor=\''+(i===fcIdx?'var(--cyan)':'var(--border)')+'\'">'
+    +'<div style="font-size:9px;color:var(--text3);margin-bottom:2px">'+(S.fcSeen.includes(i)?'✅ ':'')+'T.'+(i+1)+'</div>'
+    +'<div style="font-size:11px;font-weight:600;color:var(--text);line-height:1.4">'+fc.q+'</div></div>').join('');
+}
+
+// ═══ SIMULATOR ═══
+let activeExp=null;
+function renderSimCards(){
+  const g=document.getElementById('sim-cards');if(!g)return;
+  g.innerHTML=EXPERIMENTS.map(e=>'<div class="sim-card'+(activeExp===e.id?' ae':'')+'" onclick="loadExp(\''+e.id+'\')"><div class="sim-ico">'+e.ico+'</div><div class="sim-t">'+e.title+'</div><div class="sim-d">'+e.desc+'</div></div>').join('');
+}
+function loadExp(id){
+  const exp=EXPERIMENTS.find(e=>e.id===id);if(!exp)return;
+  activeExp=id;renderSimCards();
+  const body=document.getElementById('sim-body');if(body)body.style.display='block';
+  const s=(eid,v)=>{const e=document.getElementById(eid);if(e)e.textContent=v;};
+  s('sim-title',exp.title);s('sim-desc',exp.desc);s('sim-concepts',exp.concepts);s('sim-code',exp.code);
+  const steps=document.getElementById('sim-steps');
+  if(steps)steps.innerHTML='<div style="background:var(--bg3);border:1px solid var(--border2);border-radius:8px;padding:14px;margin-top:12px"><h4 style="color:var(--cyan);font-size:12px;margin-bottom:8px">🔍 Cómo funciona paso a paso</h4><ol style="padding-left:17px">'+exp.steps.map(st=>'<li style="font-size:11px;color:var(--text2);margin-bottom:5px;line-height:1.6">'+st+'</li>').join('')+'</ol></div>';
+  body.scrollIntoView({behavior:'smooth',block:'start'});
+}
+function copySimCode(){
+  const el=document.getElementById('sim-code');if(!el)return;
+  navigator.clipboard.writeText(el.textContent).then(()=>toast('📋','¡Copiado!','Pégalo en CodeSandbox o StackBlitz'));
+}
+
+// ═══ RETO DIARIO ═══
+function renderReto(){
+  const g=document.getElementById('reto-content');if(!g)return;
+  const today=new Date().toDateString();
+  const idx=new Date().getDay()%RETOS.length;
+  const reto=RETOS[idx];
+  const done=S.retoDone.includes(today);
+  const diff={Fácil:'var(--green)',Medio:'var(--orange)',Difícil:'var(--red)'};
+  let next='';
+  const now=new Date();const tomorrow=new Date(now);tomorrow.setDate(tomorrow.getDate()+1);tomorrow.setHours(0,0,0,0);
+  const ms=tomorrow-now;const h=Math.floor(ms/3600000);const m=Math.floor((ms%3600000)/60000);
+  next=h+'h '+m+'m';
+  g.innerHTML='<div class="reto">'+
+    '<div class="reto-header"><span class="reto-badge">RETO DEL DÍA</span></div>'+
+    '<h4>'+reto.title+'</h4>'+
+    '<div style="display:flex;gap:8px;margin:8px 0;flex-wrap:wrap">'+
+    '<span class="pill" style="background:rgba(0,212,255,.1)">'+reto.conceptos+'</span>'+
+    '<span class="pill" style="border-color:'+diff[reto.dificultad]+';color:'+diff[reto.dificultad]+'">'+reto.dificultad+'</span>'+
+    '<span class="pill gold">+'+reto.xp+' XP</span></div>'+
+    '<p>'+reto.desc+'</p>'+
+    '<div class="reto-timer">⏱ Próximo reto en: '+next+'</div>'+
+    '</div>'+
+    '<div class="lb" style="margin-top:14px">'+
+    '<h3>💡 Pista</h3><p>'+reto.pista+'</p>'+
+    '<h3>🚀 Resolver en el editor</h3>'+
+    '<p>Abre el <strong>Editor en Vivo</strong> o usa CodeSandbox para resolver este reto. Cuando lo tengas, márcalo como completado.</p>'+
+    '<div style="display:flex;gap:10px;flex-wrap:wrap;margin-top:12px">'+
+    '<button class="cbtn" onclick="goPanel(\'editor\')" style="background:linear-gradient(135deg,#444,#666)">💻 Abrir Editor en Vivo</button>'+
+    '<a href="https://codesandbox.io/s/new?template=react" target="_blank" class="cbtn" style="text-decoration:none">🏖 CodeSandbox</a>'+
+    (done?'<button class="cbtn" disabled style="opacity:.5">✅ Reto completado hoy</button>':
+    '<button class="cbtn" onclick="completeReto(\''+today+'\','+reto.xp+','+reto.coins+')">✔ Marcar como resuelto +'+reto.xp+'xp</button>')+
+    '</div></div>'+
+    '<div class="lb" style="margin-top:14px"><h3>📚 Todos los retos</h3>'+
+    '<div class="cg">'+RETOS.map((r,i)=>'<div class="mc" style="cursor:default;'+(i===idx?'border-color:var(--orange)':'')+'">'+
+    '<div class="ci">'+['🟢','🟡','🔴','🟤','⚪','🔵','🟣'][i]+'</div>'+
+    '<div class="ct">'+r.title+'</div>'+
+    '<div class="cd">'+r.desc.substring(0,80)+'...</div>'+
+    '<div class="cp"><span class="pill" style="border-color:'+diff[r.dificultad]+';color:'+diff[r.dificultad]+'">'+r.dificultad+'</span><span class="pill gold">+'+r.xp+'xp</span></div></div>').join('')+'</div></div>';
+}
+function completeReto(date,xp,coins){
+  S.retoDone.push(date);S.xp+=xp;S.coins+=coins;
+  updateLevel();checkAch();saveS();updateUI();
+  toast('🔥','¡Reto completado!','+'+xp+' XP');
+  renderReto();
+}
+
+// ═══ MAPA CONCEPTUAL ═══
+function renderMapa(){
+  const g=document.getElementById('mapa-content');if(!g)return;
+  g.innerHTML='<div class="concept-map">'+CONCEPT_MAP.map(c=>'<div class="ci-card" '+(c.mod?'onclick="goLesson(\''+c.mod+'\')" style="cursor:pointer"':'style="opacity:.5"')
+    +' onmouseover="'+(c.mod?'this.style.borderColor=\''+c.color+'\'':'')+'" onmouseout="this.style.borderColor=\'var(--border)\'">'
+    +'<div class="ci-ico">'+c.ico+'</div><div class="ci-title" style="color:'+c.color+'">'+c.title+'</div>'
+    +'<div class="ci-desc">'+c.desc+'</div>'+(c.mod?'<div style="font-size:9px;color:var(--text3);margin-top:5px">→ clic para ir al módulo</div>':'')
+    +'</div>').join('')+'</div>';
+}
+
+// ═══ LIVE EDITOR ═══
+let editorTimer=null;
+function initEditor(){
+  if(document.getElementById('ed-html').value)return;
+  loadEditorExample('counter');
+}
+function switchEditorTab(tab,btn){
+  document.querySelectorAll('.epane').forEach(p=>p.classList.remove('active'));
+  document.querySelectorAll('.etab').forEach(b=>b.classList.remove('active'));
+  document.getElementById('pane-'+tab).classList.add('active');
+  btn.classList.add('active');
+}
+function runLiveEditor(){
+  const html=document.getElementById('ed-html').value;
+  const css=document.getElementById('ed-css').value;
+  const js=document.getElementById('ed-js').value;
+  const frame=document.getElementById('preview-frame');
+  const doc='<!DOCTYPE html><html><head><style>'+css+'</style></head><body>'+html+'<script>'+js+'<\/script></body></html>';
+  frame.srcdoc=doc;
+}
+function autoRunEditor(){
+  clearTimeout(editorTimer);
+  editorTimer=setTimeout(runLiveEditor,600);
+}
+function loadEditorExample(key){
+  const ex=EDITOR_EXAMPLES[key];if(!ex)return;
+  document.getElementById('ed-html').value=ex.html;
+  document.getElementById('ed-css').value=ex.css;
+  document.getElementById('ed-js').value=ex.js;
+  runLiveEditor();
+}
+
+// ═══ REACT SIMULATOR ═══
+function runReactSim(){
+  const code=document.getElementById('rsim-code').value;
+  const out=document.getElementById('rsim-out');
+  try{
+    // Parse and simulate React component output
+    const lines=code.split('\n');
+    let output='<div style="color:var(--green);margin-bottom:8px">✅ Componente analizado correctamente</div>';
+    // Extract component name
+    const compMatch=code.match(/function\s+(\w+)/);
+    const compName=compMatch?compMatch[1]:'Componente';
+    output+='<div style="color:var(--cyan);margin-bottom:6px">⚛️ Componente: <strong>'+compName+'</strong></div>';
+    // Detect hooks used
+    const hooks=['useState','useEffect','useContext','useReducer','useMemo','useCallback','useRef'];
+    const usedHooks=hooks.filter(h=>code.includes(h));
+    if(usedHooks.length)output+='<div style="color:var(--orange);margin-bottom:6px">🎣 Hooks detectados: <strong>'+usedHooks.join(', ')+'</strong></div>';
+    // Detect JSX elements
+    const jsxMatches=code.match(/<([A-Za-z][A-Za-z0-9]*)[^>]*>/g)||[];
+    const elements=[...new Set(jsxMatches.map(m=>m.match(/<([A-Za-z][A-Za-z0-9]*)/)[1]))];
+    if(elements.length)output+='<div style="color:#8be9fd;margin-bottom:6px">🏗️ Elementos JSX: <strong>'+elements.join(', ')+'</strong></div>';
+    // Detect props
+    const propsMatch=code.match(/\{([^}]+)\}\s*\)/);
+    if(propsMatch)output+='<div style="color:var(--purple);margin-bottom:6px">📦 Props: <strong>'+propsMatch[1].trim()+'</strong></div>';
+    // Detect state vars
+    const stateVars=[];let m;const re=/const\s+\[(\w+),\s*set\w+\]\s*=\s*useState/g;
+    while((m=re.exec(code))!==null)stateVars.push(m[1]);
+    if(stateVars.length)output+='<div style="color:var(--gold);margin-bottom:10px">🔄 Variables de estado: <strong>'+stateVars.join(', ')+'</strong></div>';
+    output+='<div style="border-top:1px solid var(--border);padding-top:10px;font-size:10px;color:var(--text3)">💡 Para ver el resultado visual real, copia el código y abre <span onclick="window.open(\'https://stackblitz.com/fork/react\',\'_blank\')" style="color:var(--cyan);cursor:pointer">StackBlitz ↗</span> o <span onclick="window.open(\'https://codesandbox.io/s/new?template=react\',\'_blank\')" style="color:var(--cyan);cursor:pointer">CodeSandbox ↗</span></div>';
+    out.innerHTML=output;
+  }catch(e){
+    out.innerHTML='<div class="err">❌ Error: '+e.message+'</div>';
+  }
+}
+
+// ═══ QUIZ + FILL-THE-GAP ═══
+function setupInteractive(){
+  // Quizzes
+  document.querySelectorAll('.qo').forEach(opt=>{
+    opt.addEventListener('click',function(){
+      const qb=this.closest('.qb');if(qb.dataset.done)return;qb.dataset.done='1';
+      const ok=this.dataset.correct==='1';
+      this.classList.add(ok?'correct':'wrong');
+      if(!ok)qb.querySelectorAll('.qo[data-correct="1"]').forEach(o=>o.classList.add('correct'));
+      const exp=qb.querySelector('.qexp');if(exp)exp.classList.add('show');
+      if(ok){S.coins+=3;saveS();updateUI();toast('⭐','¡Correcto!','+3 IgorCoins');}
+    });
+  });
+  // Fill the gap
+  document.querySelectorAll('.ftg-check').forEach(btn=>{
+    btn.addEventListener('click',function(){
+      const block=this.closest('.ftg');
+      const inputs=block.querySelectorAll('.gap-input');
+      let allOk=true;let score=0;
+      inputs.forEach(inp=>{
+        const userVal=inp.value.trim();
+        const correct=inp.dataset.answer;
+        const ok=userVal.toLowerCase()===correct.toLowerCase()||correct.split('|').some(a=>a.trim().toLowerCase()===userVal.toLowerCase());
+        inp.classList.toggle('ok',ok);inp.classList.toggle('bad',!ok);
+        if(ok)score++;else allOk=false;
+      });
+      const result=block.querySelector('.ftg-result');
+      if(result){
+        result.style.display='block';
+        result.innerHTML=allOk?
+          '<span style="color:var(--green)">✅ ¡Perfecto! +5 IgorCoins</span>':
+          '<span style="color:var(--orange)">⚠️ '+score+'/'+inputs.length+' correctas. Revisa las rojas.</span>';
+        if(allOk){S.coins+=5;saveS();updateUI();}
+      }
+    });
+  });
+  // Hints
+  document.querySelectorAll('.ht').forEach(el=>{
+    el.addEventListener('click',function(){this.nextElementSibling.classList.toggle('show');});
+  });
+}
+
+// ═══ CODE COPY ═══
+function cpCode(btn){
+  const block=btn.parentElement;
+  const txt=block.textContent.replace(/^Copiar\n/,'').replace(/^✅ Copiado\n/,'').trim();
+  navigator.clipboard.writeText(txt).then(()=>{btn.textContent='✅ Copiado';setTimeout(()=>btn.textContent='Copiar',2000);});
+}
+
+// ═══ TOAST ═══
+let _tt;
+function toast(ico,title,msg){
+  clearTimeout(_tt);
+  document.getElementById('tico').textContent=ico;
+  document.getElementById('ttxt').innerHTML='<strong>'+title+'</strong>'+msg;
+  document.getElementById('toast').classList.add('show');
+  _tt=setTimeout(()=>document.getElementById('toast').classList.remove('show'),3400);
+}
+
+// ═══ HELPERS ═══
+function cb(code){return'<div class="cb"><button class="cpbtn" onclick="cpCode(this)">Copiar</button>'+code+'</div>';}
+function isDone(id){return S.completed.includes(id);}
+function cBtn(id){
+  const m=MODULES.find(x=>x.id===id);
+  return'<button class="cbtn" onclick="completeModule(\''+id+'\')"'+(isDone(id)?' disabled':'')+'>'+
+    (isDone(id)?'✅ Completado':'✔ Marcar como completado · +'+m.xp+'xp')+'</button>';
+}
+function ftg(id,title,codeParts,answers){
+  // codeParts: array of {text, gap:bool, answer, placeholder}
+  let codeHtml=codeParts.map(p=>p.gap?
+    '<input class="gap-input" data-answer="'+p.answer+'" placeholder="'+p.placeholder+'" size="'+(p.answer.length+2)+'">':
+    p.text).join('');
+  return'<div class="ftg"><h4>🧩 Fill the Gap: '+title+'</h4>'+
+    '<div class="ftg-code">'+codeHtml+'</div>'+
+    '<button class="ftg-check">Comprobar respuestas</button>'+
+    '<div class="ftg-result"></div></div>';
+}
+// ═══ LECCIONES ═══
+function buildLesson(id){
+const L={
+m1:`<div class="lb">
+<h2>⚛️ ¿Qué es React?</h2>
+<p>React es una <strong>librería JavaScript</strong> creada por Meta en 2013 para construir interfaces de usuario rápidas y escalables. Es la tecnología front-end más demandada del mundo en 2025.</p>
+<div class="box concept">💡 React es una <em>librería</em>, no un framework. Se centra solo en la capa de vista. Para rutas, estado global o HTTP combinas otras librerías del ecosistema.</div>
+<h3>📅 Historia rápida</h3>
+<div class="tl">
+  <div class="tli"><h5>2011</h5><p>Jordan Walke crea FaxJS, el prototipo interno de React, para el News Feed de Facebook.</p></div>
+  <div class="tli"><h5>2013</h5><p>React se hace open-source en JSConf US. La comunidad reacciona con escepticismo inicial por JSX.</p></div>
+  <div class="tli"><h5>2015</h5><p>React Native permite usar React para apps móviles iOS y Android nativas.</p></div>
+  <div class="tli"><h5>2019</h5><p>React 16.8 introduce los <strong>Hooks</strong>. Revolución total: adiós a los componentes de clase.</p></div>
+  <div class="tli"><h5>2024–2025</h5><p>React 19 con Server Components estables y nuevas APIs de optimización de rendimiento.</p></div>
+</div>
+<h3>🔧 El Virtual DOM</h3>
+<p>Manipular el DOM real es lento. React mantiene una copia ligera en memoria (<em>Virtual DOM</em>). Al detectar un cambio:</p>
+${cb('<span class="cmt">// ❌ Vanilla JS — imperativo</span>\ndocument.<span class="fn">getElementById</span>(<span class="str">\'precio\'</span>).textContent = <span class="str">\'99€\'</span>;\n\n<span class="cmt">// ✅ React — declarativo: describes QUÉ mostrar</span>\n<span class="kw">function</span> <span class="fn">Precio</span>({ valor }) {\n  <span class="kw">return</span> &lt;<span class="tag">p</span>&gt;{valor}€&lt;/<span class="tag">p</span>&gt;;\n}')}
+<h3>🌍 Dónde se usa React</h3>
+<div class="concept-map">
+  <div class="ci-card"><div class="ci-ico">📘</div><div class="ci-title">Facebook/Instagram</div><div class="ci-desc">Creadores. Miles de millones de usuarios.</div></div>
+  <div class="ci-card"><div class="ci-ico">🎬</div><div class="ci-title">Netflix</div><div class="ci-desc">Interfaz y herramientas internas.</div></div>
+  <div class="ci-card"><div class="ci-ico">✈️</div><div class="ci-title">Airbnb</div><div class="ci-desc">Plataforma de reservas completa.</div></div>
+  <div class="ci-card"><div class="ci-ico">💬</div><div class="ci-title">WhatsApp Web</div><div class="ci-desc">Construido íntegramente con React.</div></div>
+</div>
+<div class="qb"><h4>🧠 Quiz</h4><div class="qq">¿Qué actualiza React cuando detecta un cambio de estado?</div><div class="qopts">
+  <div class="qo" data-correct="0"><span class="ql">A</span>El DOM completo, recargando toda la página</div>
+  <div class="qo" data-correct="1"><span class="ql">B</span>Solo las partes del DOM que realmente cambiaron</div>
+  <div class="qo" data-correct="0"><span class="ql">C</span>Solo el CSS de los elementos</div>
+  <div class="qo" data-correct="0"><span class="ql">D</span>Nada, hay que refrescar manualmente</div>
+</div><div class="qexp">✅ React usa el Virtual DOM para calcular el diff mínimo y actualizar solo los nodos necesarios. Esto lo hace muy eficiente.</div></div>
+${cBtn('m1')}</div>`,
+
+m2:`<div class="lb">
+<h2>⚙️ Setup y Entorno — De cero a proyecto React</h2>
+<p>Antes de escribir React preparas tu entorno <strong>una sola vez</strong>. Después crear proyectos tarda segundos.</p>
+<h3>🟢 Paso 1 — Instalar Node.js</h3>
+<div class="box warn">⚠️ Comprueba si ya lo tienes: escribe <code>node -v</code> en la terminal. Si ves un número, ya está instalado.</div>
+<ol><li>Ve a <strong>nodejs.org</strong> y descarga la versión <strong>LTS</strong>.</li><li>Instálala como cualquier programa.</li><li>Reinicia VSCode o la terminal tras instalar.</li></ol>
+${cb('<span class="cmt"># Verificar instalación</span>\nnode -v     <span class="cmt"># v20.x.x</span>\nnpm -v      <span class="cmt"># 10.x.x</span>')}
+<h3>⚡ Paso 2 — Crear proyecto con Vite</h3>
+<p>El antiguo <code>create-react-app</code> está <strong>obsoleto</strong>. En 2025 el estándar es <strong>Vite</strong>.</p>
+${cb('<span class="cmt"># Crear proyecto</span>\nnpm create vite@latest mi-app-react\n<span class="cmt"># Elige: React → JavaScript</span>\n\ncd mi-app-react\nnpm install       <span class="cmt"># instala dependencias</span>\nnpm run dev       <span class="cmt"># servidor en localhost:5173 🚀</span>')}
+<h3>📁 Estructura del proyecto</h3>
+${cb('mi-app-react/\n├── node_modules/   <span class="cmt">← NUNCA toques esto</span>\n├── public/         <span class="cmt">← archivos estáticos</span>\n├── src/            <span class="cmt">← ✅ TODO tu código va aquí</span>\n│   ├── App.jsx     <span class="cmt">← componente raíz</span>\n│   ├── main.jsx    <span class="cmt">← punto de entrada</span>\n│   └── index.css   <span class="cmt">← estilos globales</span>\n├── index.html      <span class="cmt">← solo tiene &lt;div id="root"&gt;</span>\n└── package.json    <span class="cmt">← dependencias y scripts</span>')}
+<h3>🔵 Extensiones VSCode recomendadas</h3>
+<table class="ctbl"><thead><tr><th>Extensión</th><th>Para qué</th><th>Atajo</th></tr></thead><tbody>
+  <tr><td><strong>ES7+ React Snippets</strong></td><td>Genera componentes</td><td><code>rafce</code> + Tab</td></tr>
+  <tr><td><strong>Prettier</strong></td><td>Formatea al guardar</td><td>Format on Save</td></tr>
+  <tr><td><strong>ESLint</strong></td><td>Errores en tiempo real</td><td>Automático</td></tr>
+  <tr><td><strong>Auto Rename Tag</strong></td><td>Renombra JSX juntos</td><td>Automático</td></tr>
+</tbody></table>
+${ftg('setup','Comandos de npm',
+  [{text:'<span class="cmt"># Crear proyecto</span>\nnpm create vite@latest mi-app\n\n<span class="cmt"># Instalar dependencias</span>\nnpm ',gap:true,answer:'install',placeholder:'???'},{text:'\n\n<span class="cmt"># Servidor de desarrollo</span>\nnpm run ',gap:true,answer:'dev',placeholder:'???'},{text:'\n\n<span class="cmt"># Build de producción</span>\nnpm run ',gap:true,answer:'build',placeholder:'???'}],[])}
+<div class="qb"><h4>🧠 Quiz</h4><div class="qq">¿Cuál es la herramienta recomendada en 2025 para crear proyectos React?</div><div class="qopts">
+  <div class="qo" data-correct="0"><span class="ql">A</span>create-react-app (CRA)</div>
+  <div class="qo" data-correct="1"><span class="ql">B</span>Vite con plantilla React</div>
+  <div class="qo" data-correct="0"><span class="ql">C</span>Webpack configurado manualmente</div>
+  <div class="qo" data-correct="0"><span class="ql">D</span>Parcel</div>
+</div><div class="qexp">✅ Vite es el estándar actual. Arranque en menos de 300ms, HMR instantáneo. CRA está oficialmente desaconsejado.</div></div>
+${cBtn('m2')}</div>`,
+
+m3:`<div class="lb">
+<h2>🧩 JSX y Componentes</h2>
+<p><strong>JSX</strong> es la sintaxis especial de React. Parece HTML pero es JavaScript puro. Los <strong>componentes</strong> son funciones que devuelven JSX.</p>
+<h3>🔍 JSX por dentro</h3>
+${cb('<span class="cmt">// Lo que tú escribes</span>\n<span class="kw">const</span> el = &lt;<span class="tag">h1</span> <span class="attr">className</span>=<span class="val">"titulo"</span>&gt;¡Hola!&lt;/<span class="tag">h1</span>&gt;;\n\n<span class="cmt">// Lo que Babel genera internamente</span>\n<span class="kw">const</span> el = React.<span class="fn">createElement</span>(<span class="str">\'h1\'</span>, { className: <span class="str">\'titulo\'</span> }, <span class="str">\'¡Hola!\'</span>);')}
+<h3>📋 Reglas obligatorias</h3>
+<table class="ctbl"><thead><tr><th>Regla</th><th>❌ Mal</th><th>✅ Bien</th></tr></thead><tbody>
+  <tr><td>Un solo elemento raíz</td><td><code>&lt;h1/&gt;&lt;p/&gt;</code></td><td><code>&lt;&gt;&lt;h1/&gt;&lt;p/&gt;&lt;/&gt;</code></td></tr>
+  <tr><td>Etiquetas cerradas</td><td><code>&lt;img&gt;</code></td><td><code>&lt;img /&gt;</code></td></tr>
+  <tr><td>class → className</td><td><code>class="caja"</code></td><td><code>className="caja"</code></td></tr>
+  <tr><td>Atributos camelCase</td><td><code>onclick</code></td><td><code>onClick</code></td></tr>
+</tbody></table>
+<h3>🧩 Primer componente funcional</h3>
+${cb('<span class="kw">function</span> <span class="fn">Tarjeta</span>() {\n  <span class="kw">return</span> (\n    &lt;<span class="tag">div</span> <span class="attr">className</span>=<span class="val">"tarjeta"</span>&gt;\n      &lt;<span class="tag">h2</span>&gt;Mi primera tarjeta&lt;/<span class="tag">h2</span>&gt;\n      &lt;<span class="tag">p</span>&gt;Soy un componente React funcional.&lt;/<span class="tag">p</span>&gt;\n    &lt;/<span class="tag">div</span>&gt;\n  );\n}\n<span class="kw">export default</span> Tarjeta;')}
+<h3>🧠 Expresiones JS en JSX</h3>
+${cb('<span class="kw">function</span> <span class="fn">Info</span>() {\n  <span class="kw">const</span> nombre = <span class="str">\'Igor\'</span>;\n  <span class="kw">const</span> activo = <span class="kw">true</span>;\n  <span class="kw">return</span> (\n    &lt;<span class="tag">div</span>&gt;\n      &lt;<span class="tag">p</span>&gt;Hola, {nombre}&lt;/<span class="tag">p</span>&gt;             <span class="cmt">// variable</span>\n      &lt;<span class="tag">p</span>&gt;2+2 = {2+2}&lt;/<span class="tag">p</span>&gt;               <span class="cmt">// expresión</span>\n      &lt;<span class="tag">p</span>&gt;{activo ? <span class="str">\'Activo\'</span> : <span class="str">\'Inactivo\'</span>}&lt;/<span class="tag">p</span>&gt;  <span class="cmt">// ternario</span>\n      {activo <span class="op">&amp;&amp;</span> &lt;<span class="tag">span</span>&gt;🟢 Online&lt;/<span class="tag">span</span>&gt;}    <span class="cmt">// &&</span>\n    &lt;/<span class="tag">div</span>&gt;\n  );\n}')}
+${ftg('jsx','Sintaxis JSX',
+  [{text:'<span class="kw">function</span> <span class="fn">MiComponente</span>() {\n  <span class="kw">return</span> (\n    &lt;',gap:false},{text:'',gap:true,answer:'div|fragment',placeholder:'wrapper'},{text:'&gt;\n      &lt;<span class="tag">h1</span> ',gap:false},{text:'',gap:true,answer:'className',placeholder:'atributo'},{text:'=<span class="val">"titulo"</span>&gt;Hola&lt;/<span class="tag">h1</span>&gt;\n      &lt;<span class="tag">img</span> src=<span class="val">"foto.jpg"</span> ',gap:false},{text:'',gap:true,answer:'/',placeholder:'cierre'},{text:'&gt;\n    &lt;/div&gt;\n  );\n}'}],[])}
+<div class="qb"><h4>🧠 Quiz</h4><div class="qq">¿Cuál de estas opciones es JSX válido?</div><div class="qopts">
+  <div class="qo" data-correct="0"><span class="ql">A</span><code>&lt;div class="caja"&gt;</code></div>
+  <div class="qo" data-correct="1"><span class="ql">B</span><code>&lt;div className="caja"&gt;</code></div>
+  <div class="qo" data-correct="0"><span class="ql">C</span>Dos elementos sin wrapper</div>
+  <div class="qo" data-correct="0"><span class="ql">D</span><code>&lt;img src="x"&gt;</code> sin cerrar</div>
+</div><div class="qexp">✅ JSX usa className (no class), necesita un solo elemento raíz y todas las etiquetas void se auto-cierran: &lt;img /&gt;</div></div>
+${cBtn('m3')}</div>`,
+
+m4:`<div class="lb">
+<h2>📦 Props</h2>
+<p>Las <strong>props</strong> pasan datos de padre a hijo. Como argumentos de una función. Son <strong>inmutables</strong> en el hijo.</p>
+${cb('<span class="cmt">// Hijo — desestructuración recomendada</span>\n<span class="kw">function</span> <span class="fn">Tarjeta</span>({ nombre, ciudad, edad }) {\n  <span class="kw">return</span> &lt;<span class="tag">div</span>&gt;&lt;<span class="tag">h2</span>&gt;{nombre}&lt;/<span class="tag">h2</span>&gt;&lt;<span class="tag">p</span>&gt;{ciudad} · {edad} años&lt;/<span class="tag">p</span>&gt;&lt;/<span class="tag">div</span>&gt;;\n}\n\n<span class="cmt">// Padre</span>\n&lt;<span class="fn">Tarjeta</span> <span class="attr">nombre</span>=<span class="val">"Igor"</span> <span class="attr">ciudad</span>=<span class="val">"Madrid"</span> <span class="attr">edad</span>=<span class="val">{35}</span> /&gt;\n\n<span class="cmt">// Props por defecto</span>\n<span class="kw">function</span> <span class="fn">Boton</span>({ texto = <span class="str">\'Aceptar\'</span>, onClick }) {\n  <span class="kw">return</span> &lt;<span class="tag">button</span> <span class="attr">onClick</span>=<span class="val">{onClick}</span>&gt;{texto}&lt;/<span class="tag">button</span>&gt;;\n}\n\n<span class="cmt">// children — lo que va entre las etiquetas</span>\n<span class="kw">function</span> <span class="fn">Caja</span>({ titulo, children }) {\n  <span class="kw">return</span> &lt;<span class="tag">div</span>&gt;&lt;<span class="tag">h3</span>&gt;{titulo}&lt;/<span class="tag">h3</span>&gt;{children}&lt;/<span class="tag">div</span>&gt;;\n}\n\n<span class="cmt">// Spread desde array de objetos</span>\n{alumnos.<span class="fn">map</span>(a =&gt; &lt;<span class="fn">AlumnoCard</span> <span class="attr">key</span>=<span class="val">{a.id}</span> <span class="op">{...a}</span> /&gt;)}')}
+${ftg('props','Props básicas',
+  [{text:'<span class="kw">function</span> <span class="fn">Perfil</span>(',gap:false},{text:'',gap:true,answer:'{ nombre, edad }',placeholder:'{ ?, ? }'},{text:') {\n  <span class="kw">return</span> &lt;<span class="tag">p</span>&gt;{nombre} tiene {',gap:false},{text:'',gap:true,answer:'edad',placeholder:'???'},{text:'} años&lt;/<span class="tag">p</span>&gt;;\n}\n\n<span class="cmt">// Uso:</span>\n&lt;<span class="fn">Perfil</span> nombre=<span class="val">"Ana"</span> ',gap:false},{text:'',gap:true,answer:'edad={28}',placeholder:'???'},{text:' /&gt;'}],[])}
+<div class="qb"><h4>🧠 Quiz</h4><div class="qq">¿Qué ocurre si modificas una prop dentro del hijo?</div><div class="qopts">
+  <div class="qo" data-correct="0"><span class="ql">A</span>React lo permite y actualiza el padre</div>
+  <div class="qo" data-correct="1"><span class="ql">B</span>Viola las reglas de React y causa bugs</div>
+  <div class="qo" data-correct="0"><span class="ql">C</span>Solo aplica localmente</div>
+  <div class="qo" data-correct="0"><span class="ql">D</span>Error de compilación automático</div>
+</div><div class="qexp">✅ Props son read-only. El hijo notifica cambios al padre llamando a una función que el padre pasa como prop.</div></div>
+${cBtn('m4')}</div>`,
+
+m5:`<div class="lb">
+<h2>🔄 State y useState</h2>
+<p>El <strong>estado</strong> es la memoria privada del componente. Cuando cambia, React re-renderiza automáticamente.</p>
+${cb('<span class="imp">import</span> { useState } <span class="imp">from</span> <span class="str">\'react\'</span>;\n\n<span class="kw">function</span> <span class="fn">Contador</span>() {\n  <span class="kw">const</span> [count, setCount] = <span class="fn">useState</span>(<span class="num">0</span>); <span class="cmt">// [valor, setter]</span>\n\n  <span class="kw">return</span> (\n    &lt;<span class="tag">div</span>&gt;\n      &lt;<span class="tag">h2</span>&gt;{count}&lt;/<span class="tag">h2</span>&gt;\n      &lt;<span class="tag">button</span> <span class="attr">onClick</span>=<span class="val">{() =&gt; setCount(count + 1)}</span>&gt;+1&lt;/<span class="tag">button</span>&gt;\n      &lt;<span class="tag">button</span> <span class="attr">onClick</span>=<span class="val">{() =&gt; setCount(0)}</span>&gt;Reset&lt;/<span class="tag">button</span>&gt;\n    &lt;/<span class="tag">div</span>&gt;\n  );\n}')}
+<div class="box danger">🚫 <strong>NUNCA</strong> mutes el estado directamente: <code>count = count + 1</code> no funciona. Siempre usa el setter: <code>setCount(count + 1)</code></div>
+<h3>Arrays y objetos en estado</h3>
+${cb('<span class="cmt">// OBJETO — spread para no mutar</span>\n<span class="kw">const</span> [user, setUser] = <span class="fn">useState</span>({ nombre: <span class="str">\'\'</span>, email: <span class="str">\'\'</span> });\n<span class="fn">setUser</span>({ ...user, nombre: <span class="str">\'Igor\'</span> });\n\n<span class="cmt">// ARRAY — siempre crea nueva copia</span>\n<span class="kw">const</span> [items, setItems] = <span class="fn">useState</span>([]);\n<span class="fn">setItems</span>([...items, nuevoItem]);           <span class="cmt">// añadir</span>\n<span class="fn">setItems</span>(items.<span class="fn">filter</span>(i =&gt; i.id !== id));  <span class="cmt">// eliminar</span>\n<span class="fn">setItems</span>(items.<span class="fn">map</span>(i =&gt; i.id === id ? {...i, ok: <span class="kw">true</span>} : i)); <span class="cmt">// modificar</span>')}
+${ftg('useState','useState básico',
+  [{text:'<span class="kw">function</span> <span class="fn">Contador</span>() {\n  <span class="kw">const</span> [',gap:false},{text:'',gap:true,answer:'count',placeholder:'valor'},{text:', ',gap:false},{text:'',gap:true,answer:'setCount',placeholder:'setter'},{text:'] = ',gap:false},{text:'',gap:true,answer:'useState',placeholder:'hook'},{text:'(',gap:false},{text:'',gap:true,answer:'0',placeholder:'inicial'},{text:');\n\n  <span class="kw">return</span> &lt;<span class="tag">button</span> <span class="attr">onClick</span>={() => setCount(count + 1)}&gt;{count}&lt;/<span class="tag">button</span>&gt;;\n}'}],[])}
+<div class="mp"><h4>🚀 Mini-Proyecto: TodoList básica</h4><p>Construye una app de tareas:</p>
+<ol><li>Input controlado para nueva tarea</li><li>Botón "Añadir" → agrega al array de estado</li><li>Lista con .map()</li><li>Botón ✓ para completar (texto tachado)</li><li>Botón ✗ para eliminar</li><li>Contador de pendientes</li></ol>
+<div class="ts2"><span class="pill">useState</span><span class="pill g">Arrays</span><span class="pill">Inmutabilidad</span></div></div>
+<div class="qb"><h4>🧠 Quiz</h4><div class="qq">Tienes <code>const [items, setItems] = useState([1,2,3])</code>. ¿Cómo añades el 4 correctamente?</div><div class="qopts">
+  <div class="qo" data-correct="0"><span class="ql">A</span><code>items.push(4)</code></div>
+  <div class="qo" data-correct="0"><span class="ql">B</span><code>setItems(items.push(4))</code></div>
+  <div class="qo" data-correct="1"><span class="ql">C</span><code>setItems([...items, 4])</code></div>
+  <div class="qo" data-correct="0"><span class="ql">D</span><code>items[3]=4; setItems(items)</code></div>
+</div><div class="qexp">✅ Siempre crea un NUEVO array con spread. Mutar el array original no dispara el re-render porque React compara referencias.</div></div>
+${cBtn('m5')}</div>`,
+
+m6:`<div class="lb">
+<h2>⚡ useEffect</h2>
+<p><code>useEffect</code> ejecuta efectos secundarios <strong>después del render</strong>: fetch, timers, suscripciones, títulos del documento.</p>
+${cb('<span class="cmt">// Sin array → cada render</span>\n<span class="fn">useEffect</span>(() =&gt; { document.title = `Count: ${count}`; });\n\n<span class="cmt">// [] vacío → solo al montar</span>\n<span class="fn">useEffect</span>(() =&gt; { <span class="fn">fetchData</span>(); }, []);\n\n<span class="cmt">// Con dependencias → cuando userId cambie</span>\n<span class="fn">useEffect</span>(() =&gt; { <span class="fn">fetchUser</span>(userId); }, [userId]);\n\n<span class="cmt">// Con cleanup → cancela al desmontar</span>\n<span class="fn">useEffect</span>(() =&gt; {\n  <span class="kw">const</span> iv = <span class="fn">setInterval</span>(() =&gt; <span class="fn">tick</span>(), <span class="num">1000</span>);\n  <span class="kw">return</span> () =&gt; <span class="fn">clearInterval</span>(iv); <span class="cmt">// cleanup</span>\n}, []);')}
+<h3>Ejemplo: Fetch de datos</h3>
+${cb('<span class="kw">function</span> <span class="fn">Usuarios</span>() {\n  <span class="kw">const</span> [users, setUsers] = <span class="fn">useState</span>([]);\n  <span class="kw">const</span> [loading, setLoading] = <span class="fn">useState</span>(<span class="kw">true</span>);\n\n  <span class="fn">useEffect</span>(() =&gt; {\n    <span class="kw">const</span> ctrl = <span class="kw">new</span> <span class="fn">AbortController</span>();\n    (<span class="kw">async</span> () =&gt; {\n      <span class="kw">try</span> {\n        <span class="kw">const</span> r = <span class="kw">await</span> <span class="fn">fetch</span>(<span class="str">\'https://jsonplaceholder.typicode.com/users\'</span>, { signal: ctrl.signal });\n        <span class="fn">setUsers</span>(<span class="kw">await</span> r.<span class="fn">json</span>());\n      } <span class="kw">finally</span> { <span class="fn">setLoading</span>(<span class="kw">false</span>); }\n    })();\n    <span class="kw">return</span> () =&gt; ctrl.<span class="fn">abort</span>();\n  }, []);\n\n  <span class="kw">if</span> (loading) <span class="kw">return</span> &lt;<span class="tag">p</span>&gt;⏳ Cargando...&lt;/<span class="tag">p</span>&gt;;\n  <span class="kw">return</span> &lt;<span class="tag">ul</span>&gt;{users.<span class="fn">map</span>(u =&gt; &lt;<span class="tag">li</span> <span class="attr">key</span>=<span class="val">{u.id}</span>&gt;{u.name}&lt;/<span class="tag">li</span>&gt;)}&lt;/<span class="tag">ul</span>&gt;;\n}')}
+<div class="ex"><div class="exbadge">EJERCICIO</div><h4>💪 Cronómetro regresivo</h4><p>Cuenta de 60 a 0 cada segundo. Al llegar a 0: "⏰ ¡Tiempo!". Botón Reiniciar. Color rojo si quedan menos de 10 segundos.</p><span class="ht">💡 Pista</span><div class="hb">setInterval en useEffect con []. Retorna clearInterval como cleanup. style={{color: tiempo &lt; 10 ? 'red' : 'white'}}</div></div>
+<div class="qb"><h4>🧠 Quiz</h4><div class="qq">¿Por qué devolvemos una función cleanup en useEffect?</div><div class="qopts">
+  <div class="qo" data-correct="0"><span class="ql">A</span>Para que React sepa que el efecto terminó</div>
+  <div class="qo" data-correct="1"><span class="ql">B</span>Para cancelar timers/suscripciones al desmontar y evitar memory leaks</div>
+  <div class="qo" data-correct="0"><span class="ql">C</span>Es obligatorio siempre</div>
+  <div class="qo" data-correct="0"><span class="ql">D</span>Para resetear el estado</div>
+</div><div class="qexp">✅ Sin cleanup, si el componente se desmonta pero el timer sigue activo, intentará actualizar estado de un componente inexistente: memory leak.</div></div>
+${cBtn('m6')}</div>`,
+
+m7:`<div class="lb"><h2>📋 Listas y Keys</h2>
+<p>Renderizar colecciones con <code>.map()</code> es fundamental. La prop <code>key</code> es obligatoria e imprescindible para el rendimiento.</p>
+${cb('<span class="kw">function</span> <span class="fn">Lista</span>() {\n  <span class="kw">const</span> [busqueda, setBusqueda] = <span class="fn">useState</span>(<span class="str">\'\'</span>);\n  <span class="kw">const</span> filtrados = productos.<span class="fn">filter</span>(p =&gt;\n    p.nombre.<span class="fn">toLowerCase</span>().<span class="fn">includes</span>(busqueda.<span class="fn">toLowerCase</span>())\n  );\n  <span class="kw">return</span> (\n    &lt;<span class="tag">div</span>&gt;\n      &lt;<span class="tag">input</span> <span class="attr">value</span>=<span class="val">{busqueda}</span> <span class="attr">onChange</span>=<span class="val">{e =&gt; setBusqueda(e.target.value)}</span> /&gt;\n      {filtrados.<span class="fn">map</span>(p =&gt; (\n        &lt;<span class="tag">div</span> <span class="attr">key</span>=<span class="val">{p.id}</span>&gt;{p.nombre}&lt;/<span class="tag">div</span>&gt;  <span class="cmt">// key con ID único</span>\n      ))}\n    &lt;/<span class="tag">div</span>&gt;\n  );\n}')}
+<div class="qb"><h4>🧠 Quiz</h4><div class="qq">¿Por qué no se recomienda el índice como key si la lista puede cambiar?</div><div class="qopts">
+  <div class="qo" data-correct="0"><span class="ql">A</span>Los índices deben ser strings</div>
+  <div class="qo" data-correct="1"><span class="ql">B</span>Al reordenar o eliminar, los índices cambian y React reutiliza mal los componentes</div>
+  <div class="qo" data-correct="0"><span class="ql">C</span>React no acepta índices</div>
+  <div class="qo" data-correct="0"><span class="ql">D</span>Solo por rendimiento</div>
+</div><div class="qexp">✅ Si eliminas el elemento con index 1, todos los siguientes bajan su índice y React confunde qué cambió.</div></div>
+${cBtn('m7')}</div>`,
+
+m8:`<div class="lb"><h2>📝 Eventos y Formularios</h2>
+<p>Los formularios en React son <strong>controlados</strong>: el estado React es la fuente de verdad del input.</p>
+${cb('<span class="kw">function</span> <span class="fn">Form</span>() {\n  <span class="kw">const</span> [form, setForm] = <span class="fn">useState</span>({ nombre: <span class="str">\'\'</span>, email: <span class="str">\'\'</span>, rol: <span class="str">\'alumno\'</span> });\n\n  <span class="cmt">// Handler genérico — funciona para text, select y checkbox</span>\n  <span class="kw">const</span> <span class="fn">handleChange</span> = (e) =&gt; {\n    <span class="kw">const</span> { name, value, type, checked } = e.target;\n    <span class="fn">setForm</span>(prev =&gt; ({ ...prev, [name]: type === <span class="str">\'checkbox\'</span> ? checked : value }));\n  };\n\n  <span class="kw">return</span> (\n    &lt;<span class="tag">form</span> <span class="attr">onSubmit</span>=<span class="val">{e =&gt; { e.preventDefault(); console.log(form); }}</span>&gt;\n      &lt;<span class="tag">input</span> <span class="attr">name</span>=<span class="val">"nombre"</span> <span class="attr">value</span>=<span class="val">{form.nombre}</span> <span class="attr">onChange</span>=<span class="val">{handleChange}</span> /&gt;\n      &lt;<span class="tag">select</span> <span class="attr">name</span>=<span class="val">"rol"</span> <span class="attr">value</span>=<span class="val">{form.rol}</span> <span class="attr">onChange</span>=<span class="val">{handleChange}</span>&gt;\n        &lt;<span class="tag">option</span> <span class="attr">value</span>=<span class="val">"alumno"</span>&gt;Alumno&lt;/<span class="tag">option</span>&gt;\n        &lt;<span class="tag">option</span> <span class="attr">value</span>=<span class="val">"docente"</span>&gt;Docente&lt;/<span class="tag">option</span>&gt;\n      &lt;/<span class="tag">select</span>&gt;\n      &lt;<span class="tag">button</span> <span class="attr">type</span>=<span class="val">"submit"</span>&gt;Enviar&lt;/<span class="tag">button</span>&gt;\n    &lt;/<span class="tag">form</span>&gt;\n  );\n}')}
+<div class="qb"><h4>🧠 Quiz</h4><div class="qq">¿Qué significa formulario "controlado" en React?</div><div class="qopts">
+  <div class="qo" data-correct="0"><span class="ql">A</span>Que tiene validación HTML5</div>
+  <div class="qo" data-correct="1"><span class="ql">B</span>El estado React es la fuente de verdad del valor del input</div>
+  <div class="qo" data-correct="0"><span class="ql">C</span>No se puede editar hasta clic en "Editar"</div>
+  <div class="qo" data-correct="0"><span class="ql">D</span>Se envía automáticamente</div>
+</div><div class="qexp">✅ El value del input siempre viene del estado y onChange actualiza ese estado. Control total en todo momento.</div></div>
+${cBtn('m8')}</div>`,
+
+m9:`<div class="lb"><h2>🗺️ React Router</h2>
+<p>React Router añade navegación SPA sin recargar el navegador.</p>
+${cb('npm install react-router-dom')}
+${cb('<span class="cmt">// main.jsx</span>\n&lt;<span class="fn">BrowserRouter</span>&gt;&lt;<span class="fn">App</span> /&gt;&lt;/<span class="fn">BrowserRouter</span>&gt;\n\n<span class="cmt">// App.jsx</span>\n<span class="kw">function</span> <span class="fn">App</span>() {\n  <span class="kw">return</span> (\n    &lt;<span class="tag">div</span>&gt;\n      &lt;<span class="tag">nav</span>&gt;\n        &lt;<span class="fn">NavLink</span> <span class="attr">to</span>=<span class="val">"/"</span> <span class="attr">end</span>&gt;Inicio&lt;/<span class="fn">NavLink</span>&gt;\n        &lt;<span class="fn">NavLink</span> <span class="attr">to</span>=<span class="val">"/perfil"</span>&gt;Perfil&lt;/<span class="fn">NavLink</span>&gt;\n      &lt;/<span class="tag">nav</span>&gt;\n      &lt;<span class="fn">Routes</span>&gt;\n        &lt;<span class="fn">Route</span> <span class="attr">path</span>=<span class="val">"/"</span> <span class="attr">element</span>=<span class="val">{&lt;Inicio /&gt;}</span> /&gt;\n        &lt;<span class="fn">Route</span> <span class="attr">path</span>=<span class="val">"/perfil/:id"</span> <span class="attr">element</span>=<span class="val">{&lt;Perfil /&gt;}</span> /&gt;\n        &lt;<span class="fn">Route</span> <span class="attr">path</span>=<span class="val">"*"</span> <span class="attr">element</span>=<span class="val">{&lt;NotFound /&gt;}</span> /&gt;\n      &lt;/<span class="fn">Routes</span>&gt;\n    &lt;/<span class="tag">div</span>&gt;\n  );\n}\n\n<span class="cmt">// Hooks de router</span>\n<span class="kw">const</span> { id } = <span class="fn">useParams</span>();        <span class="cmt">// captura :id</span>\n<span class="kw">const</span> navigate = <span class="fn">useNavigate</span>();   <span class="cmt">// navegar programáticamente</span>\n<span class="fn">navigate</span>(<span class="str">\'/dashboard\'</span>);             <span class="cmt">// ir a ruta</span>\n<span class="fn">navigate</span>(-<span class="num">1</span>);                       <span class="cmt">// volver atrás</span>')}
+<div class="qb"><h4>🧠 Quiz</h4><div class="qq">Diferencia entre &lt;Link&gt; y &lt;a href&gt;</div><div class="qopts">
+  <div class="qo" data-correct="0"><span class="ql">A</span>No hay diferencia</div>
+  <div class="qo" data-correct="1"><span class="ql">B</span>Link navega sin recargar; &lt;a&gt; recarga la página completa</div>
+  <div class="qo" data-correct="0"><span class="ql">C</span>Link solo funciona con rutas absolutas</div>
+  <div class="qo" data-correct="0"><span class="ql">D</span>Link es más lento</div>
+</div><div class="qexp">✅ &lt;a href&gt; recarga la página. Link usa la History API para navegar sin recarga, manteniendo el estado React.</div></div>
+${cBtn('m9')}</div>`,
+
+m10:`<div class="lb"><h2>🌍 Context API</h2>
+<p>Context resuelve el prop drilling. Cualquier componente accede a datos globales directamente.</p>
+${cb('<span class="imp">import</span> { createContext, useState, useContext } <span class="imp">from</span> <span class="str">\'react\'</span>;\n\n<span class="cmt">// 1. Crear</span>\n<span class="kw">const</span> AuthCtx = <span class="fn">createContext</span>(<span class="kw">null</span>);\n\n<span class="cmt">// 2. Provider con estado</span>\n<span class="kw">export function</span> <span class="fn">AuthProvider</span>({ children }) {\n  <span class="kw">const</span> [user, setUser] = <span class="fn">useState</span>(<span class="kw">null</span>);\n  <span class="kw">return</span> &lt;<span class="fn">AuthCtx.Provider</span> <span class="attr">value</span>=<span class="val">{{ user, login:(d)=&gt;setUser(d), logout:()=&gt;setUser(null) }}</span>&gt;{children}&lt;/<span class="fn">AuthCtx.Provider</span>&gt;;\n}\n\n<span class="cmt">// 3. Custom hook para consumir</span>\n<span class="kw">export const</span> <span class="fn">useAuth</span> = () =&gt; <span class="fn">useContext</span>(AuthCtx);\n\n<span class="cmt">// 4. Consumir en cualquier hijo</span>\n<span class="kw">function</span> <span class="fn">Avatar</span>() {\n  <span class="kw">const</span> { user, logout } = <span class="fn">useAuth</span>();\n  <span class="kw">return</span> user ? &lt;<span class="tag">button</span> <span class="attr">onClick</span>=<span class="val">{logout}</span>&gt;{user.nombre} · Salir&lt;/<span class="tag">button</span>&gt; : <span class="kw">null</span>;\n}')}
+<div class="qb"><h4>🧠 Quiz</h4><div class="qq">¿Cuándo se re-renderiza un componente que consume Context?</div><div class="qopts">
+  <div class="qo" data-correct="0"><span class="ql">A</span>Solo al desmontar y montar</div>
+  <div class="qo" data-correct="1"><span class="ql">B</span>Cada vez que el value del Provider cambia</div>
+  <div class="qo" data-correct="0"><span class="ql">C</span>Nunca, Context no causa re-renders</div>
+  <div class="qo" data-correct="0"><span class="ql">D</span>Solo con forceUpdate()</div>
+</div><div class="qexp">✅ Cualquier cambio en el value del Provider re-renderiza a TODOS sus consumidores.</div></div>
+${cBtn('m10')}</div>`,
+
+m11:`<div class="lb"><h2>🎣 Hooks Avanzados</h2>
+${cb('<span class="cmt">// useReducer — estado complejo</span>\n<span class="kw">function</span> <span class="fn">reducer</span>(state, action) {\n  <span class="kw">switch</span>(action.type) {\n    <span class="kw">case</span> <span class="str">\'inc\'</span>: <span class="kw">return</span> { count: state.count + <span class="num">1</span> };\n    <span class="kw">case</span> <span class="str">\'reset\'</span>: <span class="kw">return</span> { count: <span class="num">0</span> };\n    <span class="kw">default</span>: <span class="kw">return</span> state;\n  }\n}\n<span class="kw">const</span> [state, dispatch] = <span class="fn">useReducer</span>(reducer, { count: <span class="num">0</span> });\n\n<span class="cmt">// useMemo — memoriza RESULTADO</span>\n<span class="kw">const</span> total = <span class="fn">useMemo</span>(() =&gt; items.<span class="fn">reduce</span>((a,i) =&gt; a+i.precio, <span class="num">0</span>), [items]);\n\n<span class="cmt">// useCallback — memoriza FUNCIÓN</span>\n<span class="kw">const</span> handleDelete = <span class="fn">useCallback</span>((id) =&gt; {\n  <span class="fn">setItems</span>(prev =&gt; prev.<span class="fn">filter</span>(i =&gt; i.id !== id));\n}, []);\n\n<span class="cmt">// useRef — referencia DOM, sin re-render</span>\n<span class="kw">const</span> inputRef = <span class="fn">useRef</span>(<span class="kw">null</span>);\n<span class="fn">useEffect</span>(() =&gt; { inputRef.current.<span class="fn">focus</span>(); }, []);\n<span class="kw">return</span> &lt;<span class="tag">input</span> <span class="attr">ref</span>=<span class="val">{inputRef}</span> /&gt;;\n\n<span class="cmt">// Custom Hook reutilizable</span>\n<span class="kw">function</span> <span class="fn">useLocalStorage</span>(key, init) {\n  <span class="kw">const</span> [val, setVal] = <span class="fn">useState</span>(() =&gt; {\n    <span class="kw">const</span> s = localStorage.<span class="fn">getItem</span>(key);\n    <span class="kw">return</span> s ? <span class="fn">JSON.parse</span>(s) : init;\n  });\n  <span class="kw">const</span> <span class="fn">set</span> = v =&gt; { <span class="fn">setVal</span>(v); localStorage.<span class="fn">setItem</span>(key, <span class="fn">JSON.stringify</span>(v)); };\n  <span class="kw">return</span> [val, set];\n}')}
+<div class="qb"><h4>🧠 Quiz</h4><div class="qq">Diferencia entre useMemo y useCallback</div><div class="qopts">
+  <div class="qo" data-correct="0"><span class="ql">A</span>useMemo para arrays, useCallback para objetos</div>
+  <div class="qo" data-correct="1"><span class="ql">B</span>useMemo memoriza el RESULTADO; useCallback memoriza la FUNCIÓN</div>
+  <div class="qo" data-correct="0"><span class="ql">C</span>Son iguales</div>
+  <div class="qo" data-correct="0"><span class="ql">D</span>useMemo solo funciona con hooks</div>
+</div><div class="qexp">✅ useMemo devuelve el valor calculado. useCallback devuelve la función memoizada.</div></div>
+${cBtn('m11')}</div>`,
+
+m12:`<div class="lb"><h2>🌐 Fetch y APIs REST</h2>
+<p>Conectar React con APIs es fundamental. Tres estados: <em>loading</em>, <em>error</em> y <em>datos</em>.</p>
+${cb('<span class="cmt">// Patrón completo con AbortController</span>\n<span class="fn">useEffect</span>(() =&gt; {\n  <span class="kw">const</span> ctrl = <span class="kw">new</span> <span class="fn">AbortController</span>();\n  (<span class="kw">async</span> () =&gt; {\n    <span class="kw">try</span> {\n      <span class="kw">const</span> r = <span class="kw">await</span> <span class="fn">fetch</span>(<span class="str">\'https://api.ejemplo.com/data\'</span>, { signal: ctrl.signal });\n      <span class="kw">if</span> (!r.ok) <span class="kw">throw new</span> <span class="fn">Error</span>(`HTTP ${r.status}`);\n      <span class="fn">setData</span>(<span class="kw">await</span> r.<span class="fn">json</span>());\n    } <span class="kw">catch</span>(e) { <span class="kw">if</span>(e.name !== <span class="str">\'AbortError\'</span>) <span class="fn">setError</span>(e.message); }\n    <span class="kw">finally</span> { <span class="fn">setLoading</span>(<span class="kw">false</span>); }\n  })();\n  <span class="kw">return</span> () =&gt; ctrl.<span class="fn">abort</span>();\n}, []);\n\n<span class="cmt">// Axios — más cómodo</span>\nnpm install axios\n<span class="kw">const</span> api = axios.<span class="fn">create</span>({ baseURL: <span class="str">\'https://mi-api.com\'</span> });\n<span class="kw">const</span> { data } = <span class="kw">await</span> api.<span class="fn">get</span>(<span class="str">\'/usuarios\'</span>);\n<span class="kw">await</span> api.<span class="fn">post</span>(<span class="str">\'/usuarios\'</span>, { nombre: <span class="str">\'Igor\'</span> });\n<span class="kw">await</span> api.<span class="fn">delete</span>(`/usuarios/${id}`);\n')}
+<div class="box tip">💡 Para proyectos serios: <strong>TanStack Query</strong>. Gestiona caché, re-fetching y paginación automáticamente.</div>
+${cBtn('m12')}</div>`,
+
+m13:`<div class="lb"><h2>🗃️ Redux Toolkit</h2>
+<p>La forma moderna de Redux. Elimina el 80% del boilerplate. Usa Immer para "mutar" de forma segura.</p>
+${cb('npm install @reduxjs/toolkit react-redux')}
+${cb('<span class="cmt">// tareasSlice.js</span>\n<span class="kw">const</span> slice = <span class="fn">createSlice</span>({\n  name: <span class="str">\'tareas\'</span>,\n  initialState: { items: [] },\n  reducers: {\n    <span class="fn">agregar</span>: (state, action) =&gt; { state.items.<span class="fn">push</span>({ id: <span class="fn">nanoid</span>(), texto: action.payload, done: <span class="kw">false</span> }); },\n    <span class="fn">toggle</span>: (state, action) =&gt; { <span class="kw">const</span> t = state.items.<span class="fn">find</span>(t =&gt; t.id === action.payload); <span class="kw">if</span>(t) t.done = !t.done; },\n    <span class="fn">eliminar</span>: (state, action) =&gt; { state.items = state.items.<span class="fn">filter</span>(t =&gt; t.id !== action.payload); }\n  }\n});\n\n<span class="cmt">// store/index.js</span>\n<span class="kw">export const</span> store = <span class="fn">configureStore</span>({ reducer: { tareas: tareasReducer } });\n\n<span class="cmt">// main.jsx</span>\n&lt;<span class="fn">Provider</span> <span class="attr">store</span>=<span class="val">{store}</span>&gt;&lt;<span class="fn">App</span>/&gt;&lt;/<span class="fn">Provider</span>&gt;\n\n<span class="cmt">// En cualquier componente</span>\n<span class="kw">const</span> items = <span class="fn">useSelector</span>(s =&gt; s.tareas.items);\n<span class="kw">const</span> dispatch = <span class="fn">useDispatch</span>();\n<span class="fn">dispatch</span>(<span class="fn">agregar</span>(<span class="str">\'Nueva tarea\'</span>));\n<span class="fn">dispatch</span>(<span class="fn">toggle</span>(id));')}
+${cBtn('m13')}</div>`,
+
+m14:`<div class="lb"><h2>🎨 Estilos en React</h2>
+${cb('<span class="cmt">// 1. CSS Modules — clases únicas con hash</span>\n<span class="cmt">/* Boton.module.css */</span>\n.boton { background: #0099cc; color: white; padding: 10px 20px; border-radius: 8px; }\n.danger { background: #ff4466; }\n\n<span class="imp">import</span> styles <span class="imp">from</span> <span class="str">\'./Boton.module.css\'</span>;\n&lt;<span class="tag">button</span> <span class="attr">className</span>=<span class="val">{`${styles.boton} ${danger ? styles.danger : \'\'}`}</span>&gt;{texto}&lt;/<span class="tag">button</span>&gt;\n\n<span class="cmt">// 2. Tailwind CSS</span>\nnpm install tailwindcss @tailwindcss/vite\n&lt;<span class="tag">div</span> <span class="attr">className</span>=<span class="val">"bg-gray-900 border rounded-xl p-5 hover:border-cyan-400"</span>&gt;\n  &lt;<span class="tag">h2</span> <span class="attr">className</span>=<span class="val">"text-cyan-400 text-xl font-bold"</span>&gt;{titulo}&lt;/<span class="tag">h2</span>&gt;\n&lt;/<span class="tag">div</span>&gt;\n\n<span class="cmt">// 3. Inline — para valores dinámicos de JS</span>\n&lt;<span class="tag">div</span> <span class="attr">style</span>=<span class="val">{{ width: `${pct}%`, background: color, transition: \'width .5s\' }}</span>&gt;&lt;/<span class="tag">div</span>&gt;')}
+${cBtn('m14')}</div>`,
+
+m15:`<div class="lb"><h2>🧪 Testing con Vitest</h2>
+${cb('npm install -D vitest @testing-library/react @testing-library/jest-dom jsdom')}
+${cb('<span class="cmt">// vite.config.js</span>\ntest: { environment: <span class="str">\'jsdom\'</span>, globals: <span class="kw">true</span>, setupFiles: <span class="str">\'./src/setupTests.js\'</span> }\n\n<span class="cmt">// setupTests.js</span>\n<span class="imp">import</span> <span class="str">\'@testing-library/jest-dom\'</span>;\n\n<span class="cmt">// Saludo.test.jsx</span>\n<span class="imp">import</span> { render, screen } <span class="imp">from</span> <span class="str">\'@testing-library/react\'</span>;\n<span class="imp">import</span> { describe, it, expect } <span class="imp">from</span> <span class="str">\'vitest\'</span>;\n\n<span class="fn">describe</span>(<span class="str">\'Contador\'</span>, () =&gt; {\n  <span class="fn">it</span>(<span class="str">\'muestra 0 al inicio\'</span>, () =&gt; {\n    <span class="fn">render</span>(&lt;<span class="fn">Contador</span> /&gt;);\n    <span class="fn">expect</span>(screen.<span class="fn">getByText</span>(<span class="str">\'0\'</span>)).<span class="fn">toBeInTheDocument</span>();\n  });\n  <span class="fn">it</span>(<span class="str">\'incrementa al hacer clic\'</span>, <span class="kw">async</span> () =&gt; {\n    <span class="kw">const</span> user = userEvent.<span class="fn">setup</span>();\n    <span class="fn">render</span>(&lt;<span class="fn">Contador</span> /&gt;);\n    <span class="kw">await</span> user.<span class="fn">click</span>(screen.<span class="fn">getByRole</span>(<span class="str">\'button\'</span>, { name: <span class="str">/\\+1/i</span> }));\n    <span class="fn">expect</span>(screen.<span class="fn">getByText</span>(<span class="str">\'1\'</span>)).<span class="fn">toBeInTheDocument</span>();\n  });\n});\n\nnpm run test\nnpm run test -- --coverage')}
+${cBtn('m15')}</div>`,
+
+m16:`<div class="lb"><h2>🚀 Deploy y Producción</h2>
+${cb('<span class="cmt"># Build de producción</span>\nnpm run build    <span class="cmt"># genera /dist optimizado</span>\nnpm run preview  <span class="cmt"># previsualiza en localhost:4173</span>\n\n<span class="cmt"># Vercel — más recomendado</span>\nnpm install -g vercel\nvercel login\nvercel --prod   <span class="cmt"># URL pública al instante</span>\n\n<span class="cmt"># netlify.toml — necesario para React Router</span>\n[build]\n  command = "npm run build"\n  publish = "dist"\n[[redirects]]\n  from = "/*"\n  to = "/index.html"\n  status = 200  <span class="cmt">← evita 404 en rutas SPA</span>\n\n<span class="cmt"># Variables de entorno (.env.local)</span>\nVITE_API_URL=http://localhost:3000\n<span class="cmt"># En código:</span>\n<span class="kw">const</span> url = import.meta.env.VITE_API_URL;\n\n<span class="cmt"># Lazy loading — carga bajo demanda</span>\n<span class="kw">const</span> Dashboard = <span class="fn">lazy</span>(() =&gt; <span class="imp">import</span>(<span class="str">\'./pages/Dashboard\'</span>));\n&lt;<span class="fn">Suspense</span> <span class="attr">fallback</span>=<span class="val">{&lt;p&gt;Cargando...&lt;/p&gt;}</span>&gt;&lt;<span class="fn">Dashboard</span>/&gt;&lt;/<span class="fn">Suspense</span>&gt;')}
+<div class="box ok">🎉 <strong>¡Felicidades!</strong> Has completado el curso completo de React. Ahora: Proyecto Final → Next.js.</div>
+<div class="qb"><h4>🧠 Quiz Final</h4><div class="qq">¿Por qué hace falta el redirect /* → /index.html en Netlify?</div><div class="qopts">
+  <div class="qo" data-correct="0"><span class="ql">A</span>Para cargar más rápido</div>
+  <div class="qo" data-correct="1"><span class="ql">B</span>React Router maneja rutas en el cliente; sin redirect el servidor devuelve 404 al acceder directamente a /dashboard</div>
+  <div class="qo" data-correct="0"><span class="ql">C</span>Para activar HTTPS</div>
+  <div class="qo" data-correct="0"><span class="ql">D</span>Para las variables de entorno</div>
+</div><div class="qexp">✅ Una SPA tiene un único index.html. React Router gestiona las rutas en el cliente. Sin el redirect el servidor no encuentra /dashboard y devuelve 404.</div></div>
+${cBtn('m16')}</div>`
+};
+return L[id]||'<div class="lb"><p>Módulo en construcción.</p></div>';
+}
+
+// ═══ INIT ═══
+loadS();updateUI();renderGrid();
+</script></body></html>
